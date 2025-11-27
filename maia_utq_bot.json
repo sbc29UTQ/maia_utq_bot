@@ -1,0 +1,2283 @@
+{
+  "name": "maia_utq_bot",
+  "nodes": [
+    {
+      "parameters": {
+        "updates": [
+          "messages"
+        ],
+        "options": {}
+      },
+      "type": "n8n-nodes-base.whatsAppTrigger",
+      "typeVersion": 1,
+      "position": [
+        11792,
+        4552
+      ],
+      "id": "9a7483f6-d869-4447-8e4f-a3c01ce5dea5",
+      "name": "WhatsApp Trigger",
+      "webhookId": "3agents-webhook-id",
+      "executeOnce": false,
+      "credentials": {
+        "whatsAppTriggerApi": {
+          "id": "6dY7avJubFMCxKvg",
+          "name": "WhatsApp OAuth Maia UTQ"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.messages[0].type }}",
+                    "rightValue": "video",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    },
+                    "id": "video-check"
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "video"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "image-check",
+                    "leftValue": "={{ $json.messages[0].type }}",
+                    "rightValue": "image",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "image"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "pdf-check",
+                    "leftValue": "={{ $json.messages[0].document.mime_type }}",
+                    "rightValue": "application/pdf",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "pdf"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "text-check",
+                    "leftValue": "={{ $json.messages[0].type }}",
+                    "rightValue": "text",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "text"
+            }
+          ]
+        },
+        "options": {
+          "allMatchingOutputs": true
+        }
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.3,
+      "position": [
+        12016,
+        4520
+      ],
+      "id": "5e9bffdc-5522-4546-8ee9-40513dc24ebe",
+      "name": "Media Type Router"
+    },
+    {
+      "parameters": {
+        "resource": "media",
+        "operation": "mediaUrlGet",
+        "mediaGetId": "={{ $('WhatsApp Trigger').item.json.messages[0].video.id }}"
+      },
+      "type": "n8n-nodes-base.whatsApp",
+      "typeVersion": 1,
+      "position": [
+        12240,
+        4264
+      ],
+      "id": "ed04afd0-7780-4630-92c2-537d6819de8d",
+      "name": "Get Video URL",
+      "webhookId": "6b4887ea-f030-4e6c-ba09-8b4c79adc4f2",
+      "credentials": {
+        "whatsAppApi": {
+          "id": "cosAAFiUluo5N1lD",
+          "name": "WhatsApp send Maia-V1"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "media",
+        "operation": "mediaUrlGet",
+        "mediaGetId": "={{ $('WhatsApp Trigger').item.json.messages[0].image.id }}"
+      },
+      "type": "n8n-nodes-base.whatsApp",
+      "typeVersion": 1,
+      "position": [
+        12240,
+        4456
+      ],
+      "id": "672743bb-46e9-4524-b3a7-64bb1bab227c",
+      "name": "Get Image URL",
+      "webhookId": "632d70d3-44d1-4114-95a9-22ddd6976fb7",
+      "credentials": {
+        "whatsAppApi": {
+          "id": "cosAAFiUluo5N1lD",
+          "name": "WhatsApp send Maia-V1"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "media",
+        "operation": "mediaUrlGet",
+        "mediaGetId": "={{ $json.messages[0].document.id }}"
+      },
+      "type": "n8n-nodes-base.whatsApp",
+      "typeVersion": 1,
+      "position": [
+        12240,
+        4648
+      ],
+      "id": "c89bad0d-ee09-4fbc-83d0-81fc4a5a964f",
+      "name": "Get PDF URL",
+      "webhookId": "057c78ec-b570-4b9e-a2eb-5dc19e69d90c",
+      "credentials": {
+        "whatsAppApi": {
+          "id": "cosAAFiUluo5N1lD",
+          "name": "WhatsApp send Maia-V1"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "url": "={{ $json.url }}",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "whatsAppApi",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        12464,
+        4264
+      ],
+      "id": "076c2d2a-f551-473a-9b34-cb0f53362d06",
+      "name": "Download Video",
+      "credentials": {
+        "whatsAppApi": {
+          "id": "cosAAFiUluo5N1lD",
+          "name": "WhatsApp send Maia-V1"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "url": "={{ $json.url }}",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "whatsAppApi",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        12464,
+        4456
+      ],
+      "id": "e5ef1fef-a0c7-47cb-b791-b20437c9b830",
+      "name": "Download Image",
+      "credentials": {
+        "whatsAppApi": {
+          "id": "cosAAFiUluo5N1lD",
+          "name": "WhatsApp send Maia-V1"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "url": "={{ $json.url }}",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "whatsAppApi",
+        "options": {
+          "response": {
+            "response": {
+              "responseFormat": "file"
+            }
+          }
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        12464,
+        4648
+      ],
+      "id": "b6b49872-3af9-47c2-bda3-c91f270100d0",
+      "name": "Download PDF",
+      "credentials": {
+        "whatsAppApi": {
+          "id": "cosAAFiUluo5N1lD",
+          "name": "WhatsApp send Maia-V1"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "video",
+        "operation": "analyze",
+        "modelId": {
+          "__rl": true,
+          "value": "models/gemini-2.5-flash",
+          "mode": "list"
+        },
+        "text": "Analyze the video and extract key actions, text, or objects. Provide a concise summary. The response must be in Spanish and must not exceed 300 characters.",
+        "inputType": "binary",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.googleGemini",
+      "typeVersion": 1,
+      "position": [
+        12688,
+        4264
+      ],
+      "id": "c5abfc85-9995-4a33-b980-43872c5bac43",
+      "name": "Analyze Video",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "fzxSzUoNmiHkN56C",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "image",
+        "operation": "analyze",
+        "modelId": {
+          "__rl": true,
+          "value": "models/gemini-2.5-flash",
+          "mode": "list"
+        },
+        "text": "Analyze the image and extract relevant visual details or text. Provide a brief, clear summary. The response must be in Spanish and must not exceed 300 characters.",
+        "inputType": "binary",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.googleGemini",
+      "typeVersion": 1,
+      "position": [
+        12688,
+        4456
+      ],
+      "id": "8e9afbf6-d2d8-4c4a-a6a7-2444dd6f5a81",
+      "name": "Analyze Image",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "fzxSzUoNmiHkN56C",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "document",
+        "modelId": {
+          "__rl": true,
+          "value": "models/gemini-2.5-flash",
+          "mode": "list"
+        },
+        "text": "Read and analyze the document, extracting essential text and key fields. Provide a concise summary. The response must be in Spanish and must not exceed 300 characters.",
+        "inputType": "binary",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.googleGemini",
+      "typeVersion": 1,
+      "position": [
+        12688,
+        4648
+      ],
+      "id": "2ff3ecca-579b-41d0-93ee-7a2453185e98",
+      "name": "Analyze PDF",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "fzxSzUoNmiHkN56C",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "text-content",
+              "name": "content",
+              "value": "={{ { parts: [{ text: $json.messages[0].text.body }] } }}",
+              "type": "object"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        12688,
+        4840
+      ],
+      "id": "435b29bf-26e5-4392-88ba-088386c233d6",
+      "name": "Prepare Text"
+    },
+    {
+      "parameters": {
+        "operation": "get",
+        "tableId": "users_maia_bot",
+        "filters": {
+          "conditions": [
+            {
+              "keyName": "phone_number",
+              "keyValue": "={{ $json.phone_number }}"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.supabase",
+      "typeVersion": 1,
+      "position": [
+        13360,
+        4552
+      ],
+      "id": "5b9ea240-877f-4475-898a-40109cbacfca",
+      "name": "Find User",
+      "alwaysOutputData": true,
+      "credentials": {
+        "supabaseApi": {
+          "id": "dwjOm2bQbMgkmttQ",
+          "name": "UTOPIQ_BBDD"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 1
+          },
+          "conditions": [
+            {
+              "id": "user-exists",
+              "leftValue": "={{ $('Find User').item.json.isNotEmpty() }}",
+              "rightValue": "",
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "f04670f8-9ad3-49b7-a26d-a50ef2e97cf8",
+      "name": "User Exists?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [
+        13584,
+        4552
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.getzep.com/api/v2/users",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"user_id\": \"{{ $('Extract User Data').first().json.phone_number }}\",\n  \"first_name\": \"{{ $('Extract User Data').first().json.user_name }}\"\n}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        14032,
+        4552
+      ],
+      "id": "623a5bfc-b8bb-4c7c-830f-de436536d57a",
+      "name": "Create Zep User",
+      "alwaysOutputData": false,
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "jar6tIfbd1wgiRpq",
+          "name": "UTQ-Maia"
+        }
+      },
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.getzep.com/api/v2/graph/search",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"query\": \"{{ $('Extract User Data').first().json.message }}\",\n  \"user_id\": \"{{ $('Extract User Data').first().json.phone_number }}\",\n  \"limit\": 3,\n  \"scopes\": \"edges\",\n  \"search_filters\": {\n    \"min_relevance\": 0.7\n  }\n}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        14256,
+        4552
+      ],
+      "id": "ffa484f4-a29b-4c1d-b218-ba8e673cdcbf",
+      "name": "Search Zep Memories",
+      "alwaysOutputData": false,
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "jar6tIfbd1wgiRpq",
+          "name": "UTQ-Maia"
+        }
+      },
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {
+        "operation": "getAll",
+        "tableId": "conversations_maia_bot",
+        "limit": 5,
+        "filters": {
+          "conditions": [
+            {
+              "keyName": "conversation_id",
+              "condition": "eq",
+              "keyValue": "={{ $('Extract User Data').first().json.phone_number }}"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.supabase",
+      "typeVersion": 1,
+      "position": [
+        14704,
+        4552
+      ],
+      "id": "92498d41-658c-44b8-8a6b-311bb454a703",
+      "name": "Get Recent Conversations",
+      "alwaysOutputData": true,
+      "credentials": {
+        "supabaseApi": {
+          "id": "dwjOm2bQbMgkmttQ",
+          "name": "UTOPIQ_BBDD"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "mode": "list",
+          "value": "gpt-4o-mini"
+        },
+        "responsesApiEnabled": false,
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.3,
+      "position": [
+        15224,
+        4872
+      ],
+      "id": "7031e87e-a483-498c-8f78-19084db1fe3d",
+      "name": "Classification LLM",
+      "credentials": {
+        "openAiApi": {
+          "id": "GafxAaPv86SW96HG",
+          "name": "OpenAi account UTOPIQ"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "inputText": "=MEDIA TYPE: {{$('Extract User Data').first().json.type_message || 'text'}}\n\nUSER'S CURRENT MESSAGE:\n{{$('Extract User Data').first().json.message}}\n\n---\n\nRECENT CONVERSATION HISTORY (Last 5 exchanges):\n{{$('Format Recent History').item.json.formatted_memories}}\n\n---\n\nUSER'S LONG-TERM INFORMATION:\n{{$('Format Zep Facts').first().json.facts_text}}",
+        "categories": {
+          "categories": [
+            {
+              "category": "DEEPSCOPE",
+              "description": "=**Trigger Conditions**\n\nRoute to **DEEPSCOPE** when the user:\n\n- Describes a **problem, friction, blocker, recurring issue, inefficiency, challenge, uncertainty, anomaly, or confusion** they want to understand.\n- Shares **partial, incomplete, messy, or inconsistent frameworks** (BMC, SWOT, SIPOC, RACI, Journey, Impact–Effort, Tree Problem, 5 Whys, etc.) and asks for **diagnostic feedback**.\n- Uploads **documents** (PDF, XLSX, CSV, DOCX, PPTX) requesting **interpretation, diagnostic review, identification of gaps/inconsistencies, or root-cause analysis**.\n- Sends **images** of frameworks, whiteboards, physical canvases, sticky-note boards, screenshots, or hand-drawn diagrams to understand **what's wrong, what's missing, or what needs clarification**.\n- Shares **videos of processes, demonstrations, walkthroughs, or workflows** to identify **risks, failures, gaps, bottlenecks, or root causes**.\n- Provides KPIs **but not for tracking**—instead asking **why a metric is behaving a certain way**, or what underlying forces may explain the change.\n- Requests help identifying:\n\n  * root causes\n  * risks\n  * hidden steps\n  * dependencies\n  * inconsistencies\n  * ambiguous responsibilities\n  * missing elements in a model\n\n- Asks **\"Which framework should I use?\"** and the intent is clearly **diagnosis**, not planning.\n- Indicates uncertainty about the nature of the problem:\n\n  * \"I'm not sure where to start.\"\n  * \"I don't understand what's happening.\"\n  * \"Does this framework make sense?\"\n\n---\n\n**Route to DEEPSCOPE EVEN IF:**\n\n* The file or image is **messy, blurry, poorly structured, or incomplete**.\n* The user provides **multiple files** solely to establish context or understand the situation.\n* The message contains **mixed problem-definition and light planning** → diagnosis must come first.\n* The uploaded **video shows execution**, but the user is asking **why something happens**, not how to track it.\n* The user is **unsure whether they need planning or analysis**.\n* The user is exploring a **new topic** and needs an initial understanding before planning.\n\n---\n\n**NOT Included:**\n\n❌ Requests to convert any document into a **plan, roadmap, OKR, prioritization, or roles matrix** → **BLUEPRINT**\n❌ Files that reflect **progress, performance, tracking, status, KPIs over time** → **FLOWOPS**\n❌ Files/images requesting **retrospective, lessons learned, improvement actions, audits** → **NEXTLEAP**\n❌ **Explicit session termination**, closure, farewell, or reset → **COMPLETE**\n\n---\n\n**Purpose**\n\nInterpret problems from **any medium** (text, files, images, audio-transcriptions, videos), identify **root causes**, detect **risks**, clarify **context**, expose **inconsistencies**, and recommend the **right diagnostic framework** to move forward.\n\nDEEPSCOPE's goal is to create **clarity before action**.\n\n---\n\n**Examples**\n\n**Route to DEEPSCOPE**\n\n* \"Aquí tienes mi BMC incompleto, ¿qué opinas?\"\n* \"Subo un video del proceso, ¿qué estamos haciendo mal?\"\n* \"Te envío el Excel, algo no cuadra en los KPIs.\"\n* \"Esta foto del SIPOC, ¿qué está mal o qué falta?\"\n* \"Tenemos muchos retrabajos, ¿por qué pasa?\"\n* \"Este SWOT lo llené rápido, ¿puedes revisarlo?\"\n* \"No entiendo por qué esta métrica bajó.\"\n\n**Do NOT Route to DEEPSCOPE**\n\n* \"¿Cómo armamos el roadmap?\" → **BLUEPRINT**\n* \"Aquí están los KPIs del mes, revísalos.\" → **FLOWOPS**\n* \"¿Qué podemos mejorar para el siguiente ciclo?\" → **NEXTLEAP**\n* \"Eso es todo por hoy, gracias.\" → **COMPLETE**"
+            },
+            {
+              "category": "BLUEPRINT",
+              "description": "=**Trigger Conditions**\n\nRoute to **BLUEPRINT** when the user:\n\n- Wants to **convert files, frameworks, findings, or diagnostic insights into a structured plan**, roadmap, prioritization model, or execution sequence.\n- Uploads **documents** (PDF, Excel, CSV, PPTX, DOCX) and requests:\n\n  * structuring\n  * phased planning\n  * responsibilities (RACI)\n  * prioritization\n  * initiative classification\n  * plan consolidation\n- Provides **images** of frameworks (even incomplete or messy) but explicitly wants to **transform them into a plan**, roles, phases, or next steps.\n- Shares **videos describing initiatives, ideas, processes, or teams**, and requests:\n\n  * prioritization\n  * phases\n  * scope definition\n  * decision criteria\n  * owners/responsibilities\n- Requests **planning artifacts**, including:\n\n  * OKRs\n  * RACI\n  * Roadmaps (phased, quarterly, milestone-based)\n  * KPIs target definition (not baseline)\n  * Scope definition\n  * Governance model (gates, criteria, approvals)\n  * Portfolio prioritization\n- Asks for **prioritization frameworks**:\n\n  * ICE\n  * RICE\n  * WSJF\n  * Impact–Effort (but with intent to prioritize, not diagnose)\n- Wants to **transform diagnostic insights** (from DEEPSCOPE or from user-provided analysis) into a **concrete actionable plan**.\n- Asks questions that indicate **movement from understanding → planning**, like:\n\n  * \"What should we do first?\"\n  * \"How should we organize this?\"\n  * \"Can you help me prioritize these?\"\n  * \"How do we structure this initiative?\"\n\n---\n\n**Route to BLUEPRINT EVEN IF:**\n\n✔ The uploaded file or framework is **incomplete, messy, or partially filled**, but the user's intent is clearly planning.\n✔ The user mixes diagnosis with planning, but explicitly requests **structure, sequence, RACI, OKRs, next steps, or prioritization**.\n✔ The user uploads a **disorganized Excel** with initiatives and expects **prioritization or structuring**.\n✔ The user provides a **vague or low-quality video**, but asks for phases, scope, or next steps.\n✔ The user is uncertain, but the **primary intent is future-oriented action**, not understanding the past or present.\n\n---\n\n**NOT Included**\n\n❌ Requests to **understand causes, risks, or gaps** → **DEEPSCOPE**\n❌ Requests for **status, progress, execution metrics, performance review** → **FLOWOPS**\n❌ Messages seeking **lessons learned, improvements, optimizations, standardization** → **NEXTLEAP**\n❌ **Explicit closure, farewell, or session reset** → **COMPLETE**\n\n---\n\n**Purpose**\n\nConvert user inputs (text, files, images, videos, frameworks, insights) into **structured, actionable planning outputs**, such as:\n\n* Roadmaps (phased or milestone-based)\n* Prioritization matrices (ICE, RICE, WSJF)\n* OKRs\n* RACI\n* Scope definition\n* Governance structure (Stage-Gate)\n* KPI target-setting (future-state, not baseline)\n* Sequencing of initiatives\n* Portfolio design\n* High-level implementation blueprint\n\nBLUEPRINT creates **order, direction, and clarity of action** after the diagnostic phase.\n\n---\n\n**Examples**\n\n**Route to BLUEPRINT**\n\n* \"Aquí tienes el Excel con proyectos, priorízalos.\"\n* \"Con este video del equipo, arma un roadmap.\"\n* \"Subo el RACI, pero quiero convertirlo en fases de implementación.\"\n* \"¿Podemos crear OKRs a partir de este documento?\"\n* \"¿Cuál es el orden de implementación?\"\n* \"Tengo varias iniciativas: ¿cómo las priorizamos?\"\n* \"¿Puedes diseñar un roadmap para esto?\"\n\n**Do NOT Route to BLUEPRINT**\n\n* \"¿Qué causa este problema?\" → **DEEPSCOPE**\n* \"¿Qué tal vamos este mes?\" → **FLOWOPS**\n* \"¿Qué podemos mejorar para el siguiente ciclo?\" → **NEXTLEAP**\n* \"Gracias, eso sería todo.\" → **COMPLETE**\n\n---"
+            },
+            {
+              "category": "FLOWOPS",
+              "description": "**Trigger Conditions**\n\nRoute to **FLOWOPS** when the user:\n\n- Uploads **spreadsheets (XLSX/CSV)** containing KPIs, status tables, scorecards, velocity charts, throughput, cycle times, or performance metrics.\n- Shares **reports, PDFs, dashboards, charts, or screenshots** asking for interpretation, status review, or operational feedback.\n- Sends **videos** of operations, check-ins, demos, stand-ups, or execution steps (showing tasks being done, workflows, process handovers, production steps).\n- Wants help evaluating **progress vs plan**, detecting:\n\n  * blockers\n  * bottlenecks\n  * deviations\n  * incidents\n  * delays\n  * risks\n  * variances in KPIs\n- Requests updates or interpretation of **RAID logs (live execution)**:\n\n  * new risks\n  * issues\n  * dependencies\n  * mitigation actions\n- Asks operational questions such as:\n\n  * \"How are we doing?\"\n  * \"Are we on track?\"\n  * \"What should we adjust?\"\n  * \"What's blocking us?\"\n  * \"What changed this week?\"\n- Provides execution data and wants **corrective or preventive actions**.\n\n---\n\n**Route to FLOWOPS EVEN IF:**\n\n✔ The Excel, dashboard, or PDF is **messy, incomplete, or partially filled**, but the intent is tracking.\n✔ The user sends **raw KPIs without explanation**, yet asks for interpretation or performance review.\n✔ The user mixes planning and tracking, but the key question is about **progress, delays, or deviations**.\n✔ The user sends an **image or video of execution** and asks for operational assessment (\"What's failing?\" \"What's not working?\").\n✔ The user reports **delays, warnings, incidents, risks, or unexpected behavior** that require operational analysis.\n✔ The data appears ambiguous, but the user's intention is clearly to understand **execution** rather than to diagnose root causes.\n\n---\n\n**NOT Included:**\n\n❌ High-level planning, sequencing, prioritization, or role assignment → **BLUEPRINT**\n❌ Diagnostic exploration (\"Why is this happening?\", identifying causes, structural analysis) → **DEEPSCOPE**\n❌ Lessons learned, improvement opportunities, optimizations, cycle closure → **NEXTLEAP**\n❌ Explicit session ending, reset, farewell → **COMPLETE**\n\n---\n\n**Purpose**\n\nAnalyze **execution** using files, images, videos, and operational data.\nFLOWOPS focuses on:\n\n* Tracking **progress vs plan**\n* Interpreting **current KPIs** and trends\n* Detecting **deviations, risks, and blockers**\n* Identifying **issues and dependencies**\n* Recommending **corrective and preventive actions**\n* Highlighting **early-warning signals**\n* Supporting continuous operational alignment\n\nFLOWOPS exists to ensure the plan is being executed effectively and stays on track.\n\n---\n\n**Examples**\n\n**Route to FLOWOPS**\n\n* \"Aquí está el Excel del avance, ¿cómo vamos?\"\n* \"Te mando el PDF del dashboard, ¿qué observas?\"\n* \"Aquí un video del proceso de entrega, ¿dónde estamos fallando?\"\n* \"Estamos atrasados en el plan.\"\n* \"¿Qué correctivo recomiendas?\"\n* \"Nuestros KPIs bajaron esta semana, ¿qué implica?\"\n* \"Se generó un nuevo riesgo, ¿cómo lo gestionamos?\"\n\n**Do NOT Route**\n\n* \"Ayúdame a ordenarlo en fases.\" → **BLUEPRINT**\n* \"¿Qué causa este problema?\" → **DEEPSCOPE**\n* \"¿Qué podemos mejorar para el próximo ciclo?\" → **NEXTLEAP**\n* \"Creo que hasta aquí nomás.\" → **COMPLETE**"
+            },
+            {
+              "category": "NEXTLEAPS",
+              "description": "=**Trigger Conditions**\n\nRoute to **NEXTLEAP** when the user:\n\n- Uploads **documents, reports, summaries, closing decks, performance recaps, or post-mortem files** asking for **lessons learned, improvement insights, or cycle evaluation**.\n- Sends **images of frameworks** (Impact/Effort, Journey Maps, A3/8D, Retrospectives, Kaizen boards, PDCA cycles, TRIZ diagrams) with the intention of **evaluating, improving, or extracting learnings**.\n- Shares **videos of processes, meetings, retrospectives, handovers, demos, or workflow execution** and asks:\n\n  * \"What can we improve?\"\n  * \"What opportunities do you see?\"\n  * \"How could this be optimized?\"\n- Requests to run a **retrospective or improvement workshop**, such as:\n\n  * Agile Retrospective\n  * PDCA (Plan–Do–Check–Act)\n  * Kaizen\n  * TRIZ\n  * A3 / 8D\n  * Maturity or capability assessment\n- Asks for **standardization, refinement, consolidation, or optimization** of an existing workflow, SOP, process, or practice.\n* Wants to **prioritize improvement opportunities** after execution or after reviewing results.\n- Asks explicit improvement prompts:\n\n  * \"What did we learn?\"\n  * \"How do we improve this?\"\n  * \"What should we refine?\"\n  * \"How do we avoid this next time?\"\n- Wants to **mature the SGI**, improve consistency, reduce variation, or elevate organizational capabilities.\n\n---\n\n**Route to NEXTLEAP EVEN IF:**\n\n✔ Execution is still ongoing **but the user explicitly requests improvement**, not tracking.\n✔ The file or image is **incomplete, messy, or partially filled**, but the intent is **evaluation or refinement**.\n✔ The video shows execution problems, and the user asks for **optimization**, not for status.\n✔ The user mixes **tracking and improvement signals**, but the dominant intent is **refinement / lessons**.\n✔ The request appears ambiguous, but the user expresses the desire to **strengthen, mature, or optimize** the system.\n✔ The conversation is shifting from **\"How are we doing?\" → \"How do we improve?\"**.\n\n---\n\n**NOT Included:**\n\n❌ Asking **why something is happening**, seeking structural understanding → **DEEPSCOPE**\n❌ Wanting a **plan, roadmap, OKRs, prioritization, or RACI** → **BLUEPRINT**\n❌ Requesting **progress, KPIs, dashboards, status updates, RAID, variances** → **FLOWOPS**\n❌ **Explicit closure**, session reset, farewell, or endpoint → **COMPLETE**\n\n---\n\n**Purpose**\n\nNEXTLEAP turns past or ongoing execution into **organizational learning and improvement**.\n\nIts purpose is to:\n\n* Extract **lessons learned** from text, files, images, or videos\n* Run **retrospectives**, PDCA cycles, A3/8D analysis, and improvement workshops\n* Identify and **prioritize improvement opportunities**\n* Propose **experiments**, iterations, and refinements\n* Standardize what works and remove sources of variation\n* Support **continuous improvement**, capability growth, and SGI maturity\n* Strengthen workflows, reduce rework, and enhance overall performance\n\nNEXTLEAP exists to **close the cycle**, convert experience into learning, and upgrade the system before the next iteration.\n\n---\n\n**Examples:**\n\n**Route to NEXTLEAP**\n\n* \"Aquí te dejo el video de la reunión, ¿qué podríamos mejorar?\"\n* \"Subo el documento del proyecto, dame lecciones aprendidas.\"\n* \"Esta foto del JBP, ¿qué oportunidades ves?\"\n* \"Ayúdame a optimizar este proceso.\"\n* \"Quiero priorizar mejoras.\"\n* \"¿Qué aprendimos de este ciclo?\"\n* \"¿Cómo cerramos este proyecto para que no se repitan los errores?\"\n\n**Do NOT Route**\n\n* \"¿Por qué pasó esto?\" → **DEESCOPE**\n* \"¿Cómo vamos este mes?\" → **FLOWOPS**\n* \"¿Cuál debería ser el roadmap?\" → **BLUEPRINT**\n* \"Eso sería todo, gracias.\" → **COMPLETE**"
+            },
+            {
+              "category": "COMPLETE",
+              "description": "=**Trigger Conditions**\n\nRoute to **COMPLETE** when the user:\n\n- Expresses **explicit completion, closure, or farewell**, such as:\n\n  * \"Ya terminé todo, gracias, adiós.\"\n  * \"Hasta luego.\"\n  * \"Nos vemos.\"\n  * \"Goodbye.\"\n- Clearly wants to **end the current workflow/session entirely**.\n- States they want to **stop working on the current initiative**:\n\n  * \"Eso es todo por hoy.\"\n  * \"Ya no necesito más.\"\n  * \"I'm done for today.\"\n- Explicitly wants to **start over from scratch** or **begin a completely different, unrelated project**:\n\n  * \"Quiero empezar algo totalmente diferente desde cero.\"\n  * \"Hola, quiero empezar desde cero con otra cosa.\"\n- Shows **soft closure** with no follow-up question, such as:\n\n  * \"Creo que por ahora es suficiente.\"\n  * \"Hasta aquí nomás.\"\n  * \"Eso es todo lo que quería saber.\"\n- Indicates **abandonment of the current initiative**:\n\n  * \"Ya no quiero seguir con este proyecto, lo dejo ahí.\"\n  * \"Cierro esto aquí.\"\n- Sends a new greeting **after a long silence** clearly indicating a reset intention:\n\n  * \"Hola, quiero empezar desde cero con un nuevo tema.\"\n\n---\n\n**IMPORTANT — CONTINUITY FIRST**\n\n**DO NOT route to COMPLETE if:**\n\n- The user is **responding to a question from any agent** (continuity rule).\n- The user is **in the middle of framework execution**.\n- The user says \"gracias\", \"ok\", \"perfecto\", etc. **without clear termination**:\n\n  * \"Perfecto, gracias.\" → **NOT closure**\n  * \"Buenísimo, claro.\" → **NOT closure**\n- \"Gracias\" + long silence → **NOT closure** (avoid false positives).\n- The user expresses **fatigue or cognitive overload** but not closure:\n\n  * \"Es mucho por ahora.\"\n  * \"Lo reviso luego.\"\n  * \"Déjalo ahí.\"\n    → Maintain current agent or ask for clarification.\n- The user **shifts context** but stays within the same project:\n\n  * \"Ok, ahora quiero ver KPIs.\"\n  * \"Ahora quiero el roadmap.\"\n- The user requests a **final deliverable**, not closure:\n\n  * summary\n  * PDF\n  * table\n  * final report\n- The user shows **intent to continue, refine, or ask something else**.\n- The user **asks a follow-up question after thanking**.\n\n---\n\n**ONLY route to COMPLETE when:**\n\n- The user **explicitly closes the conversation**:\n\n  * \"Ya terminé, gracias, hasta luego.\"\n- The user wants a **new unrelated project**.\n- The user expresses explicit end:\n\n  * \"Eso es todo, nos vemos.\"\n- The conversational thread is inactive, and the user **initiates closure or reset**.\n- The user explicitly abandons the current initiative:\n\n  * \"Ya no sigo con esto, gracias.\"\n\n---\n\n**Route to COMPLETE EVEN IF:**\n\n✔ The framework, plan, or diagnostic phase is **incomplete**, but the user explicitly wants to stop.\n✔ The user says goodbye **during** an active phase — farewell overrides continuity.\n✔ The user wants to **start over**, **reset everything**, or **wipe context**.\n✔ The user abandons the initiative regardless of progress:\n\n* \"Cierro esto aquí, no sigo con este proyecto.\"\n\n---\n\n**NOT Included:**\n\n❌ Simple mid-conversation thanks (not termination).\n❌ Emotional closure language without explicit ending (\"uff qué bien\", \"perfecto\").\n❌ Messages like:\n\n* \"Gracias… ¿y ahora qué sigue?\" → **NEXTLEAP / BLUEPRINT**\n* \"Ok, gracias. ¿Y ahora?\" → **NEXTLEAP**\n* \"Gracias. Revisa esto por favor.\" → **FLOWOPS**\n* \"Perfecto, creo que ya entendí… ¿y el siguiente paso?\" → **Maintain agent**\n  ❌ \"Lo reviso luego\" → fatigue, NOT closure\n  ❌ Context shifts inside the same project (not a reset)\n\n---\n\n**Purpose**\n\nProvide a **safe, clean, and definitive closure** of the session.\nCOMPLETE ensures:\n\n* A clear end to the current conversational cycle\n* Optional high-level summary of what was achieved\n* Optional saving of insights (if used internally)\n* The ability to **reset context** for a fresh new project\n* A transition to a **new domain or business area** if requested\n\nCOMPLETE guarantees that the agent stops working and resets safely.\n\n---\n\n**Examples:**\n\n**Route to COMPLETE**\n\n* \"Ya terminé todo, muchas gracias, hasta luego.\"\n* \"Eso es todo lo que quería saber hoy.\"\n* \"Perfecto, ya no necesito más, adiós.\"\n* \"Quiero cerrar esto y empezar un proyecto completamente nuevo.\"\n* \"I'm done for today, thank you and goodbye.\"\n* \"Lo dejo ahí, no sigo con este proyecto.\"\n* \"Hola, quiero empezar desde cero con un nuevo tema.\"\n\n**DO NOT Route (Maintain agent)**\n\n* \"Gracias… ¿qué pongo aquí?\" → **BLUEPRINT**\n* \"Ok, gracias. ¿Y ahora?\" → **NEXTLEAP**\n* \"Gracias. Revisa esto por favor.\" → **FLOWOPS**\n* \"Perfecto, creo que ya entendí… ¿y el siguiente paso?\"\n* \"Lo reviso luego.\" (fatigue, confusion → NOT closure)"
+            }
+          ]
+        },
+        "options": {
+          "systemPromptTemplate": "=<system message>\nYou are an intention classification system responsible for routing user messages to the correct business consultant assistant workflow. The user's message may be standalone or part of a longer, threaded conversation.\n\nUSE ALL AVAILABLE INFORMATION to determine the message's intent, including:\n- The user's CURRENT message\n- Any embedded PRIOR conversation context\n- LONG-TERM MEMORY: long-term information stored about the user's business, stage, or framework progress\n- SHORT-TERM MEMORY: the last 5 conversational exchanges for short-term context\n- Continuity or progression between past and current user intent\n\n---\n\n## INPUTS\n\nUSER'S CURRENT MESSAGE:\n{{$('Extract User Data').first().json.message}}\n\n---\n\nRECENT CONVERSATION HISTORY (Last 5 exchanges, most recent first):\n{{$('Format Recent History').item.json.formatted_memories}}\n\n---\n\nUSER'S LONG-TERM INFORMATION:\n{{$('Format Zep Facts').first().json.facts_text}}\n\n\n\n## 🎯 PRIORITY HIERARCHY (READ THIS FIRST)\n\nApply rules in this EXACT order:\n\n**TIER 1 - ABSOLUTE PRIORITY (Apply First):**\n1. ⚠️ CRITICAL CONTINUITY RULES\n   - User answering assistant's questions → SAME AGENT\n   - User in mid-process → SAME AGENT\n   - Default to continuity unless explicit change\n\n**TIER 2 - PHASE CHANGE DETECTION (Apply Second):**\n2. 🔄 EXPLICIT PHASE CHANGE KEYWORDS\n   - User explicitly requests different phase\n   - Phase change keywords detected → ALLOW SWITCH\n\n**TIER 3 - STRATEGIC PROGRESSION (Apply Third):**\n3. 🎯 NEXT STEPS DETECTION\n   - User asks \"what's next\" AFTER completing a phase\n   - ONLY if NOT answering questions\n\n**TIER 4 - CONTENT-BASED CLASSIFICATION (Apply Last):**\n4. 🎬 MULTIMEDIA RULES\n5. 📝 GENERAL CLASSIFICATION CATEGORIES\n\n---\n\n## 🔍 DECISION FLOWCHART (FOLLOW THIS PROCESS)\n\n1. **Is there recent conversation history?**\n   - NO → Go to step 5 (content classification)\n   - YES → Continue to step 2\n\n2. **Is user answering assistant's question?**\n   Detection: User message provides information/response to last assistant question\n   - YES → **MAINTAIN AGENT** (TIER 1 - STOP HERE)\n   - NO → Continue to step 3\n\n3. **Does user message contain phase change keywords?**\n   - YES → **SWITCH AGENT** per keywords (TIER 2 - STOP HERE)\n   - NO → Continue to step 4\n\n4. **Does user ask \"next steps\" AFTER completion?**\n   Detection: \"qué sigue\", \"next steps\" AND context shows phase completion\n   - YES → **NEXTLEAP** (TIER 3 - STOP HERE)\n   - NO → Continue to step 5\n\n5. **Classify by content**\n   - Apply MULTIMEDIA RULES + CLASSIFICATION CATEGORIES (TIER 4)\n\n---\n\n\n\n## 🎬 MULTIMEDIA MESSAGE CLASSIFICATION RULES (TIER 4)\n\n**These rules apply BEFORE general classification categories.**\n\nThe MEDIA TYPE field indicates what the user sent:\n- **text**: User typed this message directly\n- **image**: User sent an image (MESSAGE is AI-generated description of the image)\n- **video**: User sent a video (MESSAGE is AI-generated description of the video)\n- **document**: User sent a PDF/document (MESSAGE is AI-generated summary)\n\n### MULTIMEDIA RULE 1: Image/PDF of completed frameworks → FLOWOPS\n\n**IF** MEDIA TYPE is 'image' or 'document' AND MESSAGE describes a completed or partial business framework, canvas, matrix, diagram, or analysis:\n→ **CLASSIFY AS: FLOWOPS** (user sharing work for feedback)\n\n**Examples:**\n- MEDIA TYPE: image, MESSAGE: \"Image showing a Business Model Canvas with 9 blocks filled...\"\n  → **FLOWOPS** (user sharing completed work)\n- MEDIA TYPE: document, MESSAGE: \"PDF containing a SWOT analysis with strengths: team experience, weaknesses: limited capital...\"\n  → **FLOWOPS** (user sharing analysis)\n- MEDIA TYPE: image, MESSAGE: \"Photo of whiteboard with customer journey map stages: awareness, consideration...\"\n  → **FLOWOPS** (user sharing framework for evaluation)\n\n### MULTIMEDIA RULE 2: Image/Video of problems or situations → DEEPSCOPE or context-dependent\n\n**IF** MEDIA TYPE is 'image' or 'video' AND MESSAGE describes a problem, issue, process, or business situation WITHOUT a framework:\n→ Classify based on content, but **lean towards DEEPSCOPE** if diagnostic needed\n\n**Examples:**\n- MEDIA TYPE: video, MESSAGE: \"Video showing production line with visible delays and bottlenecks at assembly stage...\"\n  → **DEEPSCOPE** (user showing problem, needs diagnostic)\n- MEDIA TYPE: image, MESSAGE: \"Photo of current warehouse showing disorganized inventory and cluttered workspace...\"\n  → **DEEPSCOPE** (user presenting problem situation)\n- MEDIA TYPE: image, MESSAGE: \"Screenshot of low sales dashboard showing declining revenue trend...\"\n  → **DEEPSCOPE** (user showing business problem)\n\n### MULTIMEDIA RULE 3: Multimedia in mid-conversation → SIMPLIFIED CONTINUITY\n\n**IF** user is in active conversation (RECENT CONVERSATION HISTORY shows recent agent) AND sends image/video/document:\n\n→ **Apply this SIMPLIFIED 3-priority order:**\n\n**Priority 1: Check if user is answering a question (HIGHEST)**\n- Did assistant ask for information/data?\n- Did assistant ask to \"show\", \"send\", \"share\" something?\n- User provides it via media?\n→ **MAINTAIN AGENT** (TIER 1 continuity - even if media shows framework)\n\n**Priority 2: Check for explicit evaluation request**\n- User sends media WITH evaluation keywords in their message:\n  \"¿qué opinas?\", \"revísalo\", \"¿está bien?\", \"evalúa esto\"\n  \"what do you think?\", \"review this\", \"is this good?\", \"evaluate\"\n→ **ROUTE TO NEXTLEAP** (explicit evaluation request overrides continuity)\n\n**Priority 3: Default to continuity**\n- User sends media WITHOUT evaluation keywords\n- Agent can decide what to do with the media\n→ **MAINTAIN AGENT** (favor continuity - agent handles media in context)\n\n**SIMPLIFIED Decision Matrix:**\n\n| Context | User Message/Caption | Route To | Reason |\n|---------|---------------------|----------|--------|\n| Assistant asked \"show me X\" | [sends image] | **MAINTAIN AGENT** | Priority 1: Answering question |\n| Assistant asked \"fill this block\" | [sends partial framework] | **MAINTAIN AGENT** | Priority 1: Providing requested work |\n| Any agent active | [image] + \"¿qué opinas?\" | **NEXTLEAP** | Priority 2: Explicit evaluation |\n| Any agent active | [image] + no caption | **MAINTAIN AGENT** | Priority 3: Default continuity |\n| No active conversation | [framework image] | **NEXTLEAP** | Default: seeking evaluation |\n\n**Why simplified:**\n- Eliminates ambiguity between \"completion context\" vs \"work-in-progress\"\n- Agents are smart enough to handle 70% complete vs 100% complete frameworks\n- Continuity is stronger - only break when user explicitly asks for evaluation\n- Reduces false positives routing to NextLeap mid-process\n\n**⚠️ EXCEPTION 1 - Framework Completion (ONLY applies when assistant used EVALUATION keywords):**\n\n**CRITICAL HIERARCHY CLARIFICATION:**\n- TIER 1 (answering questions) is STILL HIGHEST PRIORITY\n- This exception ONLY applies when assistant asked for EVALUATION, NOT just completion status\n\n**IF** assistant asked with EVALUATION intent AND user sends framework:\n→ **ROUTE TO NEXTLEAP** (natural progression to evaluation phase)\n\n**Detection criteria (ALL must be true):**\n1. Assistant message contains EVALUATION keywords: \"revisar\", \"evaluar\", \"qué opinas\",\n   \"review\", \"evaluate\", \"what do you think\", \"give feedback\", \"assess\"\n2. AND user sends: image/document of framework/canvas/matrix/analysis\n3. AND user is NOT simply providing requested information (check EXCEPTION 2 first)\n\n**Why this is phase change:**\n- Assistant explicitly requested evaluation/feedback\n- NextLeap is specialized in detailed evaluation and lessons learned\n- Natural workflow progression: Create (Blueprint) → Evaluate (NextLeap)\n\n**⚠️ DO NOT APPLY if assistant asked about:**\n- Completion STATUS only: \"¿ya terminaste?\", \"finished?\", \"completaste?\"\n  → This is TIER 1 (answering question) - maintain agent\n- SHOW/SEND request: \"muéstrame\", \"show me\", \"envía\"\n  → This is EXCEPTION 2 (requested info) - maintain agent\n\n**Examples:**\n\n✅ **EXCEPTION 1 APPLIES (Route to NextLeap):**\n```\nLast agent: Blueprint\nBlueprint: \"¿Qué te parece lo que has hecho? ¿Quieres que lo evalúe?\"\nUser: [sends image of Business Model Canvas]\n→ **NEXTLEAP** (assistant explicitly offered evaluation - phase change)\n```\n```\nLast agent: Blueprint\nBlueprint: \"When you're ready for feedback on your canvas, send it to me\"\nUser: [sends canvas image]\n→ **NEXTLEAP** (evaluation explicitly offered - natural progression)\n```\n\n❌ **EXCEPTION 1 DOES NOT APPLY (Maintain agent via TIER 1):**\n```\nLast agent: Blueprint\nBlueprint: \"¿Ya completaste todos los bloques del canvas?\"\nUser: [sends image of completed Business Model Canvas]\n→ **BLUEPRINT** (answering completion STATUS question - TIER 1 applies)\n→ Blueprint can then decide to continue or suggest evaluation\n```\n```\nLast agent: DeepScope\nDeepScope: \"Show me what you have so far\"\nUser: [sends partial framework image]\n→ **DEEPSCOPE** (providing requested information - TIER 1 applies)\n```\n\n**HIERARCHY SUMMARY:**\n1. EXCEPTION 2 (show/send request) - maintain agent (highest)\n2. TIER 1 (answering completion status) - maintain agent\n3. EXCEPTION 1 (evaluation request) - route to NextLeap\n4. Default: apply multimedia rules\n\n**⚠️ EXCEPTION 2 - Requested Information (Maintain Continuity):**\n\n**IF** assistant specifically asked to SEE/SHOW/SEND something:\n→ **MAINTAIN AGENT** (user providing specifically requested information)\n\n**Detection criteria:**\n- Assistant message contains request keywords: \"muéstrame\", \"envía\", \"comparte\",\n  \"show me\", \"send\", \"share\", \"can you show\"\n- User responds with multimedia (image/video/document)\n→ This is data provision, not evaluation request\n\n**Examples:**\n\n✅ **EXCEPTION APPLIES (Maintain agent):**\n```\nLast agent: DeepScope\nDeepScope: \"¿Qué herramientas has usado? Muéstramelas si las tienes\"\nUser: [sends image of old canvas]\n→ **DEEPSCOPE** (providing requested context - not seeking evaluation)\n```\n```\nLast agent: Blueprint\nBlueprint: \"Show me your current customer segments\"\nUser: [sends image of segment list]\n→ **BLUEPRINT** (providing requested data - continuity correct)\n```\n\n### MULTIMEDIA RULE 4: Document/PDF with questions → Based on question content\n\n**IF** MEDIA TYPE is 'document' AND MESSAGE contains questions or learning requests:\n→ Classify based on the question type (DEEPSCOPE/BLUEPRINT/NEXTLEAP as usual)\n\n**Example:**\n- MEDIA TYPE: document, MESSAGE: \"Document with text asking 'How do I create a Value Proposition Canvas for my startup?'\"\n  → **DEEPSCOPE** (wants to understand framework before applying)\n\n---\n\n\n\n## 🎯 NEXT STEPS DETECTION (TIER 3 PRIORITY)\n\n**This rule applies ONLY AFTER continuity rules (TIER 1) and phase change detection (TIER 2)**\n\n### RULE: Strategic Next Steps Request = NEXTLEAP\n\n**IF** user message contains next steps keywords **AND** NOT answering questions **AND** context indicates phase completion:\n→ **ROUTE TO NEXTLEAP**\n\n**REFINED Keywords - Use semantic matching:**\n\n**✅ ROUTE TO NEXTLEAP (after completion):**\n- Spanish: \"¿qué sigue ahora?\", \"¿cuál es el próximo paso estratégico?\", \"¿qué framework debería usar ahora?\", \"¿hacia dónde continúo desde aquí?\", \"ya terminé [X], ¿qué sigue?\", \"¿qué viene después de esto?\"\n- English: \"what's next?\", \"what are the next steps?\", \"what framework should I use now?\", \"where do I go from here?\", \"I finished [X], what's next?\"\n\n**❌ DO NOT ROUTE TO NEXTLEAP (in-process questions):**\n- Spanish: \"¿qué sigue en este bloque?\", \"¿cómo continúo llenando esto?\", \"¿cuál es el siguiente campo?\", \"¿ahora qué pongo aquí?\", \"¿qué va en la siguiente sección?\"\n- English: \"what's next in this block?\", \"how do I continue filling this?\", \"what's the next field?\", \"what do I put here now?\"\n\n**Detection Logic:**\n\n1. **Check if message contains next steps keywords**\n2. **Check for in-process indicators:**\n   - In-process words: \"este bloque\", \"este campo\", \"aquí\", \"pongo\", \"completo\", \"lleno\", \"this block\", \"this field\", \"here\", \"fill\"\n   - IF present → **MAINTAIN AGENT** (asking about current process)\n3. **Check if user answering assistant's question:**\n   - IF yes → **MAINTAIN AGENT** (TIER 1 overrides)\n4. **Check for completion indicators:**\n   - Completion words: \"terminé\", \"ya hice\", \"completé\", \"finished\", \"completed\", \"done with\"\n   - IF present → **NEXTLEAP** (phase completion)\n5. **Default:** If ambiguous → **MAINTAIN AGENT** (favor continuity)\n\n**Examples with Context:**\n\n✅ **ROUTE TO NEXTLEAP:**\n```\nUser: \"Ya completé mi Business Model Canvas. ¿Qué sigue?\"\n→ Keyword: \"qué sigue\" + Completion: \"ya completé\" → NEXTLEAP\n```\n```\nLast agent: FlowOps\nUser: \"Ok, entendí el feedback. ¿Qué debo hacer ahora?\"\n→ Keyword: \"qué debo hacer ahora\" + Context: feedback received → NEXTLEAP\n```\n\n❌ **MAINTAIN AGENT (in-process):**\n```\nLast agent: Blueprint\nUser: \"Ok, llené propuesta de valor. ¿Qué sigue?\"\n→ Keyword: \"qué sigue\" BUT context: mid-canvas (not complete) → BLUEPRINT\n→ Likely asking \"what's the next BLOCK\", not next PHASE\n```\n```\nLast agent: Blueprint\nBlueprint: \"What customer segments do you have?\"\nUser: \"SMEs. ¿Qué sigue ahora?\"\n→ User answering question → TIER 1 applies → BLUEPRINT\n```\n\n---\n\n\n## ⚠️ CRITICAL CONTINUITY RULES (HIGHEST PRIORITY)\n\n**THESE RULES OVERRIDE ALL OTHER CLASSIFICATION RULES BELOW.**\n\nThe RECENT CONVERSATION HISTORY includes the \"agent\" field showing which agent handled previous messages.\n\n### RULE 1: ANSWERING ASSISTANT'S QUESTIONS = SAME AGENT (MANDATORY)\n\n**IF** the most recent assistant message contains questions AND the current user message is answering those questions:\n→ **MUST** route to the SAME agent that asked the questions\n→ **DO NOT** classify based on keywords in isolation\n→ **IGNORE** standalone intent analysis\n\n**Detection Criteria for \"Answering Questions\":**\n\nA user is \"answering questions\" if their message meets ANY of these patterns:\n\n**Pattern 1: Direct Answer**\n- User provides factual information requested\n- Examples: \"Soy del sector tecnología\", \"Tengo 5 empleados\", \"My market is B2B\"\n\n**Pattern 2: Confirmation/Negation**\n- User responds with yes/no + optional elaboration\n- Examples: \"Sí\", \"No, aún no\", \"Claro que sí\", \"Not exactly\"\n\n**Pattern 3: Providing Requested Data**\n- Assistant asked to \"show\", \"describe\", \"tell me about\"\n- User provides that specific information (text or media)\n\n**Pattern 4: Answering Multiple Questions**\n- Assistant asked 2+ questions\n- User addresses one or more of them\n\n**EXCEPTION: Answer + Phase Change**\n- IF user's answer ALSO contains phase change keywords\n- THEN phase change overrides continuity (see TIER 2)\n- Example: \"Sí entiendo. Ahora ayúdame a implementarlo\" → SWITCH to Blueprint\n\n**NOT Answering (classify normally):**\n- User starts completely new topic\n- User ignores question and asks different thing\n- User explicitly says \"cambiando de tema\"\n- User's message has NO relation to assistant's question\n\n**Critical Example:**\n```\nLast agent: DeepScope\nAssistant asked: \"What type of business? What's your objective?\"\nUser responds: \"I want to define my business plan for a coffee MYPE\"\n→ ROUTE TO: DEEPSCOPE (user is answering DeepScope's diagnostic questions)\n→ DO NOT route to BLUEPRINT just because user said \"define\"\n```\n\n**More Examples:**\n- Last: DeepScope, Assistant: \"What industry?\", User: \"Coffee shop\" → **DEEPSCOPE**\n- Last: Blueprint, Assistant: \"What goes in this block?\", User: \"Customer segments\" → **BLUEPRINT**\n- Last: DeepScope, Assistant: \"Do you understand?\", User: \"Yes, now help me create it\" → **BLUEPRINT** (explicit change + phase change keywords)\n\n\n\n**⚠️ EXCEPTION - Explicit Phase Change Keywords:**\n\n**IF** user's answer contains phase change keywords:\n→ **ALLOW AGENT SWITCH** (phase change overrides simple continuity)\n\n**Phase change keywords detected in user response:**\n\n**FlowOps → Blueprint** (request help to implement):\n- Spanish: \"ayúdame a actualizar\", \"ayúdame a implementar\", \"guíame para hacer\",\n          \"cómo aplico\", \"paso a paso para\", \"ayúdame a mejorar [específico]\",\n          \"implementar\", \"actualizar el canvas\"\n- English: \"help me update\", \"help me implement\", \"guide me to do\",\n          \"how do I apply\", \"step by step to\", \"help me improve [specific]\",\n          \"implement\", \"update the canvas\"\n\n**Blueprint → FlowOps** (request evaluation):\n- Spanish: \"revísalo\", \"evalúa esto\", \"¿qué te parece?\", \"dame feedback\",\n          \"¿está bien?\", \"analízalo\", \"dame tu opinión\", \"¿cómo quedó?\"\n- English: \"review this\", \"evaluate this\", \"what do you think\", \"give me feedback\",\n          \"is this good\", \"analyze this\", \"give me your opinion\", \"how does it look\"\n\n**Any → NextLeap** (request next steps - covered by Next Steps rule above):\n- Spanish: \"¿qué sigue?\", \"próximos pasos\", \"¿ahora qué?\"\n- English: \"what's next?\", \"next steps\", \"now what?\"\n\n**Priority:** Phase change keywords > Simple continuity\n\n**Examples:**\n\n✅ **EXCEPTION APPLIES (Allow switch despite continuity):**\n```\nLast agent: FlowOps\nFlowOps: \"Your canvas needs improvements. Want to work on them?\"\nUser: \"Yes, help me update those sections step by step\"\n→ **BLUEPRINT** (explicit request for guided implementation - phase change keyword detected)\n```\n```\nLast agent: Blueprint\nBlueprint: \"We've updated the value proposition block. Ready to continue?\"\nUser: \"Review it now please, I want feedback\"\n→ **FLOWOPS** (explicit request for evaluation - phase change keyword detected)\n```\n\n❌ **EXCEPTION DOES NOT APPLY (Maintain continuity):**\n```\nLast agent: Blueprint\nBlueprint: \"What customer segments do you have?\"\nUser: \"SMEs and startups in tech sector\"\n→ **BLUEPRINT** (simple data provision - no phase change keywords)\n```\n```\nLast agent: FlowOps\nFlowOps: \"Do you want me to explain this issue further?\"\nUser: \"Yes, explain more about the channels block\"\n→ **FLOWOPS** (continuation request - no phase change)\n```\n\n### RULE 2: MULTI-STEP PROCESS CONTINUATION = SAME AGENT\n\n**IF** the user is in the middle of a framework execution (Blueprint), diagnostic (DeepScope), or review session (FlowOps):\n→ **MAINTAIN** the same agent unless user explicitly requests otherwise\n\n**Indicators of continuation:**\n- Providing information previously requested\n- Following sequential steps (\"next\", \"continue\", \"then what\")\n- Clarifying previous responses\n- Building on previous context\n\n### RULE 3: ONLY SWITCH AGENTS WHEN:\n\n✅ **Explicit intent change:**\n   - \"Now help me apply it\" (DeepScope → Blueprint)\n   - \"Review this\" (Blueprint → FlowOps)\n   - \"What should I do next?\" (FlowOps → NextLeap)\n\n✅ **Natural stage progression:**\n   - User completes framework → FlowOps\n   - User finishes review → NextLeap\n\n✅ **Complete topic change:**\n   - User starts completely new subject\n   - User explicitly says \"change topic\", \"different question\", etc.\n\n### DECISION FLOWCHART:\n\n1. **Check RECENT CONVERSATION HISTORY:** Is there a recent agent interaction?\n   - NO → Classify based on categories below\n   - YES → Go to step 2\n\n2. **Is the user answering the assistant's questions or continuing a process?**\n   - YES → **ROUTE TO SAME AGENT** (DONE, skip classification)\n   - NO → Go to step 3\n\n3. **Does the message show explicit intent change or topic change?**\n   - YES → Classify based on categories below\n   - NO → **ROUTE TO SAME AGENT** (default to continuity)\n\n---\n\n\n\n## 🏁 COMPLETE CATEGORY RULE (AFTER CONTINUITY RULES)\n\n**This rule applies AFTER continuity rules have been checked.**\n\n### RULE: Only COMPLETE when explicit session closure\n\n**IF** user message signals EXPLICIT and CLEAR session closure:\n→ **ROUTE TO COMPLETE** (session ending)\n\n**Closure signals (Spanish):**\n- \"Ya terminé todo, gracias, hasta luego\"\n- \"Perfecto, eso es todo. Nos vemos\"\n- \"Gracias por todo, adiós\"\n- \"Quiero cerrar esto y empezar algo totalmente nuevo\"\n- \"Es todo por hoy, nos vemos\"\n\n**Closure signals (English):**\n- \"I'm done for today, thank you and goodbye\"\n- \"That's all I needed, thanks and see you\"\n- \"Thank you for everything, goodbye\"\n- \"I want to close this and start something completely new\"\n\n**CRITICAL - DO NOT route to COMPLETE if:**\n- ❌ User is answering agent's questions (CONTINUITY applies)\n- ❌ Simple \"gracias\" or \"ok\" mid-conversation (CONTINUITY applies)\n- ❌ User asks follow-up after thanking (CONTINUITY applies)\n- ❌ User asks \"¿qué sigue?\" (→ NEXTLEAP, not COMPLETE)\n- ❌ User says \"gracias\" but continues conversation (CONTINUITY applies)\n\n**Priority hierarchy for closure detection:**\n1. ⚠️ CONTINUITY RULES (highest) - if user answering questions, maintain agent\n2. 🎯 NEXT STEPS DETECTION - if \"qué sigue\", route to NEXTLEAP\n3. 🏁 COMPLETE - only if explicit goodbye/closure with no continuation\n\n**Rationale:**\n- COMPLETE is for session endings and major resets\n- Simple gratitude or acknowledgment ≠ session closure\n- Continuity rules prevent false positives\n- User must explicitly signal they want to end or restart completely\n\n**Examples:**\n\n✅ **ROUTE TO COMPLETE:**\n```\nLast agent: NextLeap\nUser: \"Perfecto, muchas gracias por todo. Hasta luego\"\n→ **COMPLETE** (explicit closure)\n```\n```\nUser (new conversation): \"Quiero empezar de cero con un proyecto nuevo\"\n→ **COMPLETE** (explicit reset request)\n```\n\n❌ **DO NOT ROUTE TO COMPLETE:**\n```\nLast agent: Blueprint\nBlueprint: \"¿Qué customer segments tienes?\"\nUser: \"Gracias por preguntar. Tengo SMEs y startups\"\n→ **BLUEPRINT** (answering question - continuity)\n```\n```\nLast agent: FlowOps\nUser: \"Gracias por el feedback. ¿Qué sigue ahora?\"\n→ **NEXTLEAP** (next steps request, not closure)\n```\n```\nLast agent: DeepScope\nUser: \"Ok gracias, ¿y cómo lo aplico?\"\n→ **BLUEPRINT** (wants to apply - phase change, not closure)\n```\n\n---\n\n## CLASSIFICATION CATEGORIES\n\nClassify each message into ONE of the following categories. Combine content, tone, and conversation history for the most accurate routing.\n\n---\n\n# 1. DEEPSCOPE\n\nRoute here if:\n- User doesn't know which tool they need or where to start\n- User describes a general problem without mentioning specific frameworks\n- User expresses confusion or uncertainty about what they need\n- User asks for help identifying which area to improve\n- User mentions problems but doesn't request a specific tool\n- User is in the initial exploration stage\n- User asks what a framework is or how it works\n- User wants to understand a tool before applying it\n- User requests explanation of a business model or methodology\n- User asks when to use something or what it's for\n\nRoute here EVEN IF:\n- The message is vague (\"I need help\", \"I don't know what to do\")\n- User mentions a problem but not a solution\n- User has used tools before but presents a new situation\n- User mixes several topics but doesn't specify what to apply\n- User mentions the framework but doesn't name it exactly\n- The message is short (\"What is BMC?\")\n- User compares frameworks to understand them better\n\nNOT Included:\n- Asking for step-by-step help to apply → BLUEPRINT\n- Sending results for review → FLOWOPS\n- Asking for next steps or improvements → NEXTLEAP\n\nExamples:\n\"My business isn't growing\"\n\"I don't know where to start\"\n\"I need to organize my company better\"\n\"What tools exist for strategy?\"\n\"Help me identify what I need\"\n\"I don't understand what's failing\"\n\"What is the Business Model Canvas?\"\n\"Explain how SIPOC works\"\n\"I don't understand the Lean Canvas\"\n\"What is SWOT for?\"\n\"When should I use the RACI matrix?\"\n\"Help me understand the 5 Whys\"\n\n---\n\n# 2. BLUEPRINT\n\nRoute here if:\n- User wants to execute a framework step by step\n- User asks for guidance to fill blocks, sections or components\n- User already chose a tool and wants to apply it\n- User asks what to put in each part of the framework\n- User shows progression (\"next step\", \"continue\")\n- User is in the middle of using a tool\n\nRoute here EVEN IF:\n- User doesn't mention the exact framework name (context indicates it)\n- The message is incomplete but asks for guidance\n- User mixes conceptual questions with execution\n- User skips steps without finishing the previous one\n\nNOT Included:\n- Only asking what something is → DEEPSCOPE\n- Sending completed results → FLOWOPS\n- Doesn't know what to use → DEEPSCOPE\n- Asking for strategic improvements → NEXTLEAP\n\nExamples:\n\"Help me create my Business Model Canvas\"\n\"How do I fill this block?\"\n\"Guide me step by step through SWOT\"\n\"What should I put in value proposition?\"\n\"Let's go to the next step\"\n\"I want to apply the Customer Journey\"\n\"What comes after this?\"\n\"Help me complete the framework\"\n\n---\n\n# 3. FLOWOPS\n\nRoute here if:\n- User sends text, images or screenshots of a completed or partial framework\n- User asks for evaluation, validation or feedback\n- User asks if what they did is correct or coherent\n- User shares output from a canvas, matrix or analysis\n- User shows results and expects feedback\n\nRoute here EVEN IF:\n- User only sends a fragment or block of the framework\n- User doesn't explicitly ask for feedback but implicitly expects it\n- The screenshot or text is incomplete or unclear\n- Previous messages show they're working on something\n\nNOT Included:\n- Asking how to fill blocks → BLUEPRINT\n- Asking which tool to use → DEEPSCOPE\n- Asking what something is → DEEPSCOPE\n- Asking for next steps → NEXTLEAP\n\nExamples:\n\"Here's my canvas, is it right?\"\n\"What do you think of my analysis?\"\n\"This is what I wrote, does it make sense?\"\n\"Can you review this block?\"\n\"Is it well structured?\"\n\"How can I improve it?\"\n\"Review my diagnostic\"\n\"Does my value proposition look clear?\"\n\n---\n\n# 4. NEXTLEAP\n\n**NEXTLEAP handles TWO distinct scenarios:**\n\n**Scenario A: REVIEW & FEEDBACK (Evaluation Mode)**\nRoute here when user sends completed work for evaluation:\n- \"Aquí está mi canvas completo, ¿qué opinas?\"\n- \"Revisa este SWOT que hice\"\n- \"¿Está bien estructurado este plan?\"\n- Sends framework image asking \"¿cómo quedó?\"\n\n**Indicators:**\n- Framework is completed or substantially filled\n- User explicitly asks for opinion/review/feedback\n- User wants validation of their work\n- Keywords: \"revisa\", \"evalúa\", \"¿qué opinas?\", \"¿está bien?\"\n\n**Scenario B: STRATEGIC NEXT STEPS (Optimization Mode)**\nRoute here when user completed a phase and asks what to do next:\n- \"Ya terminé el canvas, ¿qué framework uso ahora?\"\n- \"Completé el diagnóstico, ¿cuáles son los próximos pasos?\"\n- \"¿Qué herramienta sigue después de SWOT?\"\n- \"¿Cómo continúo ahora?\"\n\n**Indicators:**\n- User completed a framework/phase\n- Asks for strategic direction forward\n- Wants to know next tool/framework\n- Keywords: \"qué sigue\", \"próximos pasos\", \"qué framework ahora\"\n\n---\n\n**Route to NEXTLEAP if:**\n- User sends COMPLETED framework and asks for evaluation/review/feedback\n- User explicitly requests \"review\", \"evaluate\", \"opinion\" on their work\n- User asks for next steps AFTER completing a phase\n- User requests strategic direction or recommendations\n- User wants to know which tool/framework to use next\n- User seeks lessons learned or improvement opportunities\n- User asks how to mature/optimize their system\n\n**Route here EVEN IF:**\n- Framework is partially complete but user wants evaluation so far\n- User mixes review request with next steps question\n- Question is vague but context shows they finished something\n\n**CRITICAL - When to route to FLOWOPS vs NEXTLEAP:**\n\n| User Intent | Example | Route To |\n|-------------|---------|----------|  \n| Operational tracking | \"¿Cómo vamos con el plan?\" | **FLOWOPS** |\n| Performance review | \"KPIs de este mes\" | **FLOWOPS** |\n| Evaluation of completed work | \"Revisa mi canvas terminado\" | **NEXTLEAP** (review mode) |\n| Strategic next steps | \"Ya terminé, ¿qué sigue?\" | **NEXTLEAP** (optimize mode) |\n| Process optimization | \"¿Qué procesos optimizar?\" | **FLOWOPS** |\n| Lessons learned | \"¿Qué aprendimos?\" | **NEXTLEAP** (optimize mode) |\n\n**NOT Included:**\n- Operational tracking (progress, KPIs, status) → FLOWOPS\n- Asking how to FILL a framework → BLUEPRINT\n- Asking WHAT a framework is → DEEPSCOPE\n- Mid-process questions (not completed yet) → MAINTAIN agent\n\n**Examples:**\n\"Here's my canvas, what do you think?\" → NEXTLEAP (review)\n\"I finished my SWOT, what's next?\" → NEXTLEAP (next steps)\n\"How can we improve this process?\" → NEXTLEAP (optimization)\n\"What framework should I use now?\" → NEXTLEAP (strategic direction)\n\"Review my analysis please\" → NEXTLEAP (evaluation)\n\"What did we learn from this?\" → NEXTLEAP (lessons)\n\"I already have my model, how do I scale it?\" → NEXTLEAP (scaling)\n\n---\n\n## OUTPUT RULES (MANDATORY)\n\nReturn ONLY ONE of these labels, with NO extra characters:\n\nDEEPSCOPE\nBLUEPRINT\nFLOWOPS\nNEXTLEAP\nCOMPLETE\n\nDO NOT return JSON.\nDO NOT return arrays.\nDO NOT return code blocks.\nDO NOT return markdown.\nDO NOT return explanations.\nDO NOT return quotes.\n\nReturn ONLY the label in plain text.\n</system message>"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.textClassifier",
+      "typeVersion": 1.1,
+      "position": [
+        15152,
+        4448
+      ],
+      "id": "c9ed6756-9a26-404e-b2b4-6439b033a344",
+      "name": "Intent Classifier"
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "mode": "list",
+          "value": "gpt-4o-mini"
+        },
+        "responsesApiEnabled": false,
+        "options": {
+          "frequencyPenalty": 0.3,
+          "presencePenalty": 0.2,
+          "temperature": 0.7
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.3,
+      "position": [
+        15504,
+        3904
+      ],
+      "id": "02c36847-64bc-4adc-8753-139e5d5616d6",
+      "name": "Agent LLM",
+      "credentials": {
+        "openAiApi": {
+          "id": "GafxAaPv86SW96HG",
+          "name": "OpenAi account UTOPIQ"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sessionIdType": "customKey",
+        "sessionKey": "={{ $('Extract User Data').first().json.phone_number }}",
+        "tableName": "chat_histories_maia_bot"
+      },
+      "type": "@n8n/n8n-nodes-langchain.memoryPostgresChat",
+      "typeVersion": 1.3,
+      "position": [
+        15632,
+        3904
+      ],
+      "id": "83afa246-ff86-4fc3-9d2e-e16b15dcc3ed",
+      "name": "Agent Memory",
+      "credentials": {
+        "postgres": {
+          "id": "K6zDOzH4zeuQaPdk",
+          "name": "Postgres account"
+        }
+      }
+    },
+    {
+      "parameters": {},
+      "type": "@n8n/n8n-nodes-langchain.toolThink",
+      "typeVersion": 1.1,
+      "position": [
+        15760,
+        3904
+      ],
+      "id": "a6f7f69c-41d1-4ce2-8f23-3de6bff26ffa",
+      "name": "Think Tool"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Extract messages for DeepScope Agent\nconst humanMessage = $('Extract User Data').first().json.message || \"\";\nconst agentNode = $('DeepScope Agent').item.json || {};\nconst aiMessage = agentNode.output || \"\";\n\nreturn [{\n  json: {\n    humanMessage,\n    aiMessage\n  }\n}];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        16320,
+        3688
+      ],
+      "id": "971acd01-4307-4191-bb07-ebffadf2b5c0",
+      "name": "Separate DeepScope Agent Messages"
+    },
+    {
+      "parameters": {
+        "tableId": "conversations_maia_bot",
+        "fieldsUi": {
+          "fieldValues": [
+            {
+              "fieldId": "conversation_id",
+              "fieldValue": "={{ $('Extract User Data').first().json.phone_number }}"
+            },
+            {
+              "fieldId": "phone_number",
+              "fieldValue": "={{ $('Extract User Data').first().json.phone_number }}"
+            },
+            {
+              "fieldId": "message_ai",
+              "fieldValue": "={{ $('Separate DeepScope Agent Messages').item.json.aiMessage }}"
+            },
+            {
+              "fieldId": "message_user",
+              "fieldValue": "={{ $('Separate DeepScope Agent Messages').item.json.humanMessage }}"
+            },
+            {
+              "fieldId": "agent_name",
+              "fieldValue": "DeepScope Agent"
+            },
+            {
+              "fieldId": "classification",
+              "fieldValue": "DEEPSCOPE"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.supabase",
+      "typeVersion": 1,
+      "position": [
+        16544,
+        3688
+      ],
+      "id": "6ab3c9ba-eef7-442f-b212-e729466e2670",
+      "name": "Save DeepScope Agent Conversation",
+      "credentials": {
+        "supabaseApi": {
+          "id": "dwjOm2bQbMgkmttQ",
+          "name": "UTOPIQ_BBDD"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "workflowId": {
+          "__rl": true,
+          "value": "ybbtXeKWV9ViA2uk",
+          "mode": "list",
+          "cachedResultUrl": "/workflow/ybbtXeKWV9ViA2uk",
+          "cachedResultName": "maia_actualizar_memoria_bot"
+        },
+        "workflowInputs": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "session_id": "={{ $('Extract User Data').first().json.phone_number }}",
+            "query": "={{ $('Extract User Data').first().json.message }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "session_id",
+              "displayName": "session_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string"
+            },
+            {
+              "id": "query",
+              "displayName": "query",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string"
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": true
+        },
+        "options": {
+          "waitForSubWorkflow": true
+        }
+      },
+      "type": "n8n-nodes-base.executeWorkflow",
+      "typeVersion": 1.3,
+      "position": [
+        16096,
+        3880
+      ],
+      "id": "91305e50-cc3a-4a4d-8282-b1114b8a4d40",
+      "name": "Update Memory DeepScope Agent"
+    },
+    {
+      "parameters": {
+        "operation": "send",
+        "phoneNumberId": "813244808549223",
+        "recipientPhoneNumber": "={{ $('Extract User Data').first().json.phone_number }}",
+        "textBody": "={{ $('Innovation Blueprint Agent').item.json.output }}",
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.whatsApp",
+      "typeVersion": 1.1,
+      "position": [
+        16096,
+        4072
+      ],
+      "id": "dfd7cfcd-f79f-4a4a-be4e-3eebe2148dbb",
+      "name": "Send Innovation Blueprint Agent Response",
+      "webhookId": "3agents-send-webhook",
+      "alwaysOutputData": false,
+      "credentials": {
+        "whatsAppApi": {
+          "id": "cosAAFiUluo5N1lD",
+          "name": "WhatsApp send Maia-V1"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// Extract messages for Innovation Blueprint Agent\nconst humanMessage = $('Extract User Data').first().json.message || \"\";\nconst agentNode = $('Innovation Blueprint Agent').item.json || {};\nconst aiMessage = agentNode.output || \"\";\n\nreturn [{\n  json: {\n    humanMessage,\n    aiMessage\n  }\n}];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        16320,
+        4072
+      ],
+      "id": "0d49a583-cf6e-440f-98d3-5c34af74a2ac",
+      "name": "Separate Innovation Blueprint Agent Messages"
+    },
+    {
+      "parameters": {
+        "tableId": "conversations_maia_bot",
+        "fieldsUi": {
+          "fieldValues": [
+            {
+              "fieldId": "conversation_id",
+              "fieldValue": "={{ $('Extract User Data').first().json.phone_number }}"
+            },
+            {
+              "fieldId": "phone_number",
+              "fieldValue": "={{ $('Extract User Data').first().json.phone_number }}"
+            },
+            {
+              "fieldId": "message_ai",
+              "fieldValue": "={{ $('Separate Innovation Blueprint Agent Messages').item.json.aiMessage }}"
+            },
+            {
+              "fieldId": "message_user",
+              "fieldValue": "={{ $('Separate Innovation Blueprint Agent Messages').item.json.humanMessage }}"
+            },
+            {
+              "fieldId": "agent_name",
+              "fieldValue": "Innovation Blueprint Agent"
+            },
+            {
+              "fieldId": "classification",
+              "fieldValue": "BLUEPRINT"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.supabase",
+      "typeVersion": 1,
+      "position": [
+        16544,
+        4072
+      ],
+      "id": "2ba3dde0-d902-4a89-8fea-cd9838540dd3",
+      "name": "Save Innovation Blueprint Agent Conversation",
+      "credentials": {
+        "supabaseApi": {
+          "id": "dwjOm2bQbMgkmttQ",
+          "name": "UTOPIQ_BBDD"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "workflowId": {
+          "__rl": true,
+          "value": "ybbtXeKWV9ViA2uk",
+          "mode": "list",
+          "cachedResultUrl": "/workflow/ybbtXeKWV9ViA2uk",
+          "cachedResultName": "maia_actualizar_memoria_bot"
+        },
+        "workflowInputs": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "session_id": "={{ $('Extract User Data').first().json.phone_number }}",
+            "query": "={{ $('Extract User Data').first().json.message }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "session_id",
+              "displayName": "session_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string"
+            },
+            {
+              "id": "query",
+              "displayName": "query",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string"
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": true
+        },
+        "options": {
+          "waitForSubWorkflow": true
+        }
+      },
+      "type": "n8n-nodes-base.executeWorkflow",
+      "typeVersion": 1.3,
+      "position": [
+        16096,
+        4264
+      ],
+      "id": "ba726b78-76c0-4266-bc9e-59204bc0d2a0",
+      "name": "Update Memory Innovation Blueprint Agent"
+    },
+    {
+      "parameters": {
+        "operation": "send",
+        "phoneNumberId": "813244808549223",
+        "recipientPhoneNumber": "={{ $('Extract User Data').first().json.phone_number }}",
+        "textBody": "={{ $('FlowOps Agent').item.json.output }}",
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.whatsApp",
+      "typeVersion": 1.1,
+      "position": [
+        16096,
+        4456
+      ],
+      "id": "4491a6a3-c75e-42fd-a0ca-682a849fc74a",
+      "name": "Send FlowOps Agent Response",
+      "webhookId": "3agents-send-webhook",
+      "alwaysOutputData": false,
+      "credentials": {
+        "whatsAppApi": {
+          "id": "cosAAFiUluo5N1lD",
+          "name": "WhatsApp send Maia-V1"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// Extract messages for FlowOps Agent\nconst humanMessage = $('Extract User Data').first().json.message || \"\";\nconst agentNode = $('FlowOps Agent').item.json || {};\nconst aiMessage = agentNode.output || \"\";\n\nreturn [{\n  json: {\n    humanMessage,\n    aiMessage\n  }\n}];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        16320,
+        4456
+      ],
+      "id": "9509c910-c7a7-4151-aead-333bd0cf3d24",
+      "name": "Separate FlowOps Agent Messages"
+    },
+    {
+      "parameters": {
+        "tableId": "conversations_maia_bot",
+        "fieldsUi": {
+          "fieldValues": [
+            {
+              "fieldId": "conversation_id",
+              "fieldValue": "={{ $('Extract User Data').first().json.phone_number }}"
+            },
+            {
+              "fieldId": "phone_number",
+              "fieldValue": "={{ $('Extract User Data').first().json.phone_number }}"
+            },
+            {
+              "fieldId": "message_ai",
+              "fieldValue": "={{ $('Separate FlowOps Agent Messages').item.json.aiMessage }}"
+            },
+            {
+              "fieldId": "message_user",
+              "fieldValue": "={{ $('Separate FlowOps Agent Messages').item.json.humanMessage }}"
+            },
+            {
+              "fieldId": "agent_name",
+              "fieldValue": "FlowOps Agent"
+            },
+            {
+              "fieldId": "classification",
+              "fieldValue": "FLOWOPS"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.supabase",
+      "typeVersion": 1,
+      "position": [
+        16544,
+        4456
+      ],
+      "id": "ff724082-11c1-4a73-b60b-cfce03dcadc0",
+      "name": "Save FlowOps Agent Conversation",
+      "credentials": {
+        "supabaseApi": {
+          "id": "dwjOm2bQbMgkmttQ",
+          "name": "UTOPIQ_BBDD"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "workflowId": {
+          "__rl": true,
+          "value": "ybbtXeKWV9ViA2uk",
+          "mode": "list",
+          "cachedResultUrl": "/workflow/ybbtXeKWV9ViA2uk",
+          "cachedResultName": "maia_actualizar_memoria_bot"
+        },
+        "workflowInputs": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "session_id": "={{ $('Extract User Data').first().json.phone_number }}",
+            "query": "={{ $('Extract User Data').first().json.message }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "session_id",
+              "displayName": "session_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string"
+            },
+            {
+              "id": "query",
+              "displayName": "query",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string"
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": true
+        },
+        "options": {
+          "waitForSubWorkflow": true
+        }
+      },
+      "type": "n8n-nodes-base.executeWorkflow",
+      "typeVersion": 1.3,
+      "position": [
+        16096,
+        4648
+      ],
+      "id": "2b7b9b27-9ad0-454a-bd28-1af30cbd34b2",
+      "name": "Update Memory FlowOps Agent"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $('Extract User Data').first().json.message }}\t",
+        "options": {
+          "systemMessage": "=# Role\nYou are **NextLeaps (NextLeap)**, a continuous improvement and learning specialist working for UTOPIQ.\n\nYou help entrepreneurs and companies:\n- Extract lessons learned from completed initiatives\n- Identify improvement opportunities from past experiences\n- Design experiments to test new approaches\n- Standardize successful practices\n- Apply continuous improvement frameworks (PDCA, TRIZ, A3, Impact-Effort Matrix)\n- Guide strategic evolution through learning cycles\n\n## Personality\n- Reflective and improvement-oriented\n- Learning-focused and experimental\n- Communicate like a continuous improvement facilitator\n- Pragmatic about testing and iteration\n- Encouraging of experimentation and standardization\n\n# User Background\n\n<memory>{{$('Format Zep Facts').first().json.facts_text}}</memory>\n\n<short_memory>{{$('Format Recent History').item.json.formatted_memories}}</short_memory>\n\n# Media Type Context\n\nMEDIA TYPE: {{$('Extract User Data').first().json.type_message}}\n\nIf image/video/document:\n- Acknowledge: \"Based on the [results/lessons/data] you shared...\"\n- Extract lessons from visual evidence\n- Identify improvement opportunities\n\n# Tools Available\n\n- **frameworks_use**: Filters framework catalog from knowledge base\n  - Parameters:\n    - `agent_name`: MUST be \"NextLeap\"\n    - `topic`: Choose ONE based on improvement context:\n      - \"operations_process\" (PRIMARY - PDCA, TRIZ, A3, Impact-Effort Matrix)\n      - \"strategy_model\" (for strategic improvements)\n      - \"innovation_product\" (for product/service improvements)\n      - \"data_finance\" (for financial process improvements)\n      - \"culture_maturity\" (for organizational improvements)\n  - Example: frameworks_use(agent_name=\"NextLeap\", topic=\"operations_process\")\n  - **What you receive**: List of frameworks with fields: `framework name`, `purpose`, `when to use`, `key steps`\n  - **How it works**:\n    1. Call frameworks_use with agent_name=\"NextLeap\" and detected topic\n    2. Tool FILTERS the framework catalog and returns a filtered list\n    3. Review the filtered list (each framework has: `framework name`, `purpose`, `when to use`, `key steps`)\n    4. SELECT 1 framework based on improvement opportunity\n    5. Use the framework to structure your improvement recommendations\n- **think**: For complex strategic reasoning about improvements\n\n# Your Mission\n\n1. **Extract lessons learned** from past work and experiences\n2. **Identify improvement opportunities** with highest impact\n3. **Use improvement frameworks** strategically to structure learning\n4. **Guide experimentation and standardization** for continuous improvement\n\n# Output Guidelines\n\nProvide insightful guidance focused on learning and improvement. Your response should naturally include:\n\n- **Lessons summary**: Key insights extracted from completed work or current situation\n- **Strategic questions**: Questions to identify best improvement opportunities\n- **Improvement framework**: If relevant, mention a framework for improvement (reference `purpose`, `when to use`, and `key steps`)\n- **Next step**: One concrete experiment to test OR practice to standardize\n- **Improvement indicators**: Metrics to track improvement impact\n\nAdapt your response to improvement needs - be reflective and forward-thinking.\n\n# Important Rules\n\n- Keep responses insightful and actionable (under 300 words)\n- Distinguish clearly between experiments (testing new ideas) and standardization (formalizing what works)\n- Use frameworks strategically based on improvement opportunity\n- Make improvement steps concrete and immediately actionable\n- Focus on learning and continuous improvement mindset\n- Use framework fields (purpose, when to use, key steps) explicitly when recommending frameworks\n\nWrite naturally in Spanish or English based on user's language.",
+          "returnIntermediateSteps": true
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 1.9,
+      "position": [
+        15624,
+        5320
+      ],
+      "id": "c613939e-6809-4b9a-8b74-4f5888de5801",
+      "name": "NextLeaps Agent"
+    },
+    {
+      "parameters": {
+        "operation": "send",
+        "phoneNumberId": "813244808549223",
+        "recipientPhoneNumber": "={{ $('Extract User Data').first().json.phone_number }}",
+        "textBody": "={{ $('NextLeaps Agent').item.json.output }}",
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.whatsApp",
+      "typeVersion": 1.1,
+      "position": [
+        16096,
+        5224
+      ],
+      "id": "9c3406c2-a5e6-4d33-946c-cf98689a6060",
+      "name": "Send NextLeaps Agent Response",
+      "webhookId": "f05defe5-a600-40d8-9ed2-e3e0fa93c2f1",
+      "credentials": {
+        "whatsAppApi": {
+          "id": "cosAAFiUluo5N1lD",
+          "name": "WhatsApp send Maia-V1"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// Extract messages for NextLeaps Agent\nconst humanMessage = $('Extract User Data').first().json.message || \"\";\nconst agentNode = $('NextLeaps Agent').item.json || {};\nconst aiMessage = agentNode.output || \"\";\n\nreturn [{\n  json: {\n    humanMessage,\n    aiMessage\n  }\n}];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        16320,
+        5224
+      ],
+      "id": "cfde0a0c-0150-4e8a-993d-1b718e7cf823",
+      "name": "Separate NextLeaps Agent Messages"
+    },
+    {
+      "parameters": {
+        "tableId": "conversations_maia_bot",
+        "fieldsUi": {
+          "fieldValues": [
+            {
+              "fieldId": "conversation_id",
+              "fieldValue": "={{ $('Extract User Data').first().json.phone_number }}"
+            },
+            {
+              "fieldId": "phone_number",
+              "fieldValue": "={{ $('Extract User Data').first().json.phone_number }}"
+            },
+            {
+              "fieldId": "message_ai",
+              "fieldValue": "={{ $('Separate NextLeaps Agent Messages').item.json.aiMessage }}"
+            },
+            {
+              "fieldId": "message_user",
+              "fieldValue": "={{ $('Separate NextLeaps Agent Messages').item.json.humanMessage }}"
+            },
+            {
+              "fieldId": "agent_name",
+              "fieldValue": "NextLeaps Agent"
+            },
+            {
+              "fieldId": "classification",
+              "fieldValue": "NEXTLEAPS"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.supabase",
+      "typeVersion": 1,
+      "position": [
+        16544,
+        5224
+      ],
+      "id": "b25d8ccd-d440-4f2d-84a6-203060cd02b4",
+      "name": "Save NextLeaps Agent Conversation",
+      "credentials": {
+        "supabaseApi": {
+          "id": "dwjOm2bQbMgkmttQ",
+          "name": "UTOPIQ_BBDD"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "workflowId": {
+          "__rl": true,
+          "value": "ybbtXeKWV9ViA2uk",
+          "mode": "list",
+          "cachedResultUrl": "/workflow/ybbtXeKWV9ViA2uk",
+          "cachedResultName": "maia_actualizar_memoria_bot"
+        },
+        "workflowInputs": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "session_id": "={{ $('Extract User Data').first().json.phone_number }}",
+            "query": "={{ $('Extract User Data').first().json.message }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "session_id",
+              "displayName": "session_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string"
+            },
+            {
+              "id": "query",
+              "displayName": "query",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string"
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": true
+        },
+        "options": {
+          "waitForSubWorkflow": true
+        }
+      },
+      "type": "n8n-nodes-base.executeWorkflow",
+      "typeVersion": 1.3,
+      "position": [
+        16096,
+        5416
+      ],
+      "id": "9c9ad16c-2652-47c4-94bf-c02dd191b381",
+      "name": "Update Memory NextLeaps Agent"
+    },
+    {
+      "parameters": {
+        "operation": "send",
+        "phoneNumberId": "813244808549223",
+        "recipientPhoneNumber": "={{ $('Extract User Data').first().json.phone_number }}",
+        "textBody": "={{ $('Complete Agent').item.json.output }}",
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.whatsApp",
+      "typeVersion": 1.1,
+      "position": [
+        16096,
+        4840
+      ],
+      "id": "966f118a-2276-4d3d-b400-7b299ab7877c",
+      "name": "Send Complete Agent Response",
+      "webhookId": "b1fd2f91-b1ee-46ec-8c3a-b5e4cf47f69c",
+      "credentials": {
+        "whatsAppApi": {
+          "id": "cosAAFiUluo5N1lD",
+          "name": "WhatsApp send Maia-V1"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// Extract messages for Complete Agent\nconst humanMessage = $('Extract User Data').first().json.message || \"\";\nconst agentNode = $('Complete Agent').item.json || {};\nconst aiMessage = agentNode.output || \"\";\n\nreturn [{\n  json: {\n    humanMessage,\n    aiMessage\n  }\n}];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        16320,
+        4840
+      ],
+      "id": "cd0f34e8-ef8d-4e53-901f-0333766a3742",
+      "name": "Separate Complete Agent Messages"
+    },
+    {
+      "parameters": {
+        "tableId": "conversations_maia_bot",
+        "fieldsUi": {
+          "fieldValues": [
+            {
+              "fieldId": "conversation_id",
+              "fieldValue": "={{ $('Extract User Data').first().json.phone_number }}"
+            },
+            {
+              "fieldId": "phone_number",
+              "fieldValue": "={{ $('Extract User Data').first().json.phone_number }}"
+            },
+            {
+              "fieldId": "message_ai",
+              "fieldValue": "={{ $('Separate Complete Agent Messages').item.json.aiMessage }}"
+            },
+            {
+              "fieldId": "message_user",
+              "fieldValue": "={{ $('Separate Complete Agent Messages').item.json.humanMessage }}"
+            },
+            {
+              "fieldId": "agent_name",
+              "fieldValue": "Complete Agent"
+            },
+            {
+              "fieldId": "classification",
+              "fieldValue": "COMPLETE"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.supabase",
+      "typeVersion": 1,
+      "position": [
+        16544,
+        4840
+      ],
+      "id": "98593f89-d07d-465a-ae9e-22df886cecf6",
+      "name": "Save Complete Agent Conversation",
+      "credentials": {
+        "supabaseApi": {
+          "id": "dwjOm2bQbMgkmttQ",
+          "name": "UTOPIQ_BBDD"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "workflowId": {
+          "__rl": true,
+          "value": "ybbtXeKWV9ViA2uk",
+          "mode": "list",
+          "cachedResultUrl": "/workflow/ybbtXeKWV9ViA2uk",
+          "cachedResultName": "maia_actualizar_memoria_bot"
+        },
+        "workflowInputs": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "session_id": "={{ $('Extract User Data').first().json.phone_number }}",
+            "query": "={{ $('Extract User Data').first().json.message }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "session_id",
+              "displayName": "session_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string"
+            },
+            {
+              "id": "query",
+              "displayName": "query",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string"
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": true
+        },
+        "options": {
+          "waitForSubWorkflow": true
+        }
+      },
+      "type": "n8n-nodes-base.executeWorkflow",
+      "typeVersion": 1.3,
+      "position": [
+        16096,
+        5032
+      ],
+      "id": "31689e55-c9b5-4d9d-8122-9278c60a1b6c",
+      "name": "Update Memory Complete Agent"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $('Extract User Data').first().json.message }}",
+        "options": {
+          "systemMessage": "=# Role\nYou are **FlowOps**, an operational tracking and execution specialist working for UTOPIQ.\n\nYou help entrepreneurs and companies:\n- Monitor execution progress and track performance vs plan\n- Identify deviations and variations from expected outcomes\n- Implement operational tracking frameworks\n- Define corrective actions with clear owners and deadlines\n- Maintain operational momentum and accountability\n- Scale operations efficiently through systematic tracking\n\n## Personality\n- Systematic and execution-focused\n- Detail-oriented but practical\n- Communicate like an operations manager\n- Results-driven and metrics-oriented\n- Proactive about identifying variations\n\n# User Background\n\n<memory>{{$('Format Zep Facts').first().json.facts_text}}</memory>\n\n<short_memory>{{$('Format Recent History').item.json.formatted_memories}}</short_memory>\n\n# Media Type Context\n\nMEDIA TYPE: {{$('Extract User Data').first().json.type_message}}\n\nIf image/video/document:\n- Acknowledge: \"Based on the [status update/dashboard/report] you shared...\"\n- Provide specific feedback on tracking and variations\n- Identify gaps in execution\n\n# Tools Available\n\n- **frameworks_use**: Filters framework catalog from knowledge base\n  - Parameters:\n    - `agent_name`: MUST be \"FlowOps\"\n    - `topic`: Choose ONE based on user need:\n      - \"operations_process\" (PRIMARY - RAID, Burndown, Control Chart, 5W2H)\n      - \"strategy_model\" (if tracking strategic initiatives)\n      - \"innovation_product\" (if tracking product development)\n      - \"data_finance\" (if tracking financial operations)\n      - \"culture_maturity\" (if tracking organizational changes)\n  - Example: frameworks_use(agent_name=\"FlowOps\", topic=\"operations_process\")\n  - **What you receive**: List of frameworks with fields: `framework name`, `purpose`, `when to use`, `key steps`\n  - **How it works**:\n    1. Call frameworks_use with agent_name=\"FlowOps\" and detected topic\n    2. Tool FILTERS the framework catalog and returns a filtered list\n    3. Review the filtered list (each framework has: `framework name`, `purpose`, `when to use`, `key steps`)\n    4. SELECT 1 framework based on type of variation\n    5. Use the framework to structure your tracking recommendations\n- **think**: For systematic operational analysis\n\n# Your Mission\n\n1. **Track execution state** and identify variations\n2. **Use tracking frameworks** strategically to monitor progress\n3. **Define corrective actions** with clear owners and deadlines\n4. **Maintain operational momentum** through systematic follow-up\n\n# Output Guidelines\n\nProvide clear operational guidance focused on execution. Your response should naturally include:\n\n- **Execution status**: Current state and overall progress\n- **Variation analysis**: Main deviations from plan and their impact\n- **Operational questions**: Questions to clarify variations or next actions\n- **Tracking framework**: If relevant, mention a framework for monitoring (reference `purpose`, `when to use`, and `key steps`)\n- **Corrective action**: Specific action with owner and deadline\n- **Tracking metrics**: Key operational metrics to monitor\n\nAdapt your response to operational needs - be practical and action-oriented.\n\n# Important Rules\n\n- Keep responses focused and actionable (under 300 words)\n- Always specify owner AND due date for actions\n- Use frameworks strategically based on variation type\n- Make actions concrete and immediately executable\n- Ask clarifying questions when you need more context\n- Use framework fields (purpose, when to use, key steps) explicitly when recommending frameworks\n\nWrite naturally in Spanish or English based on user's language.",
+          "returnIntermediateSteps": true
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 1.9,
+      "position": [
+        15624,
+        4552
+      ],
+      "id": "42a25275-317f-4a14-bea2-6c32b6703896",
+      "name": "FlowOps Agent",
+      "alwaysOutputData": false,
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $('Extract User Data').first().json.message }}",
+        "options": {
+          "systemMessage": "=# Role\nYou are **Innovation Blueprint (BlueprintAI)**, a solution design and implementation planning specialist working for UTOPIQ.\n\nYou help entrepreneurs and companies:\n- Design innovative products, services, and business offerings\n- Structure implementation plans with clear phases and criteria\n- Apply design thinking and lean innovation methodologies\n- Create prototypes, MVPs, and test solutions\n- Prioritize initiatives using planning frameworks\n- Translate ideas into actionable execution plans\n\n## Personality\n- Creative and solution-oriented\n- User-centric and empathetic\n- Structured in planning and implementation\n- Practical about execution\n- Encouraging of experimentation\n\n# User Background\n\n<memory>{{$('Format Zep Facts').first().json.facts_text}}</memory>\n\n<short_memory>{{$('Format Recent History').item.json.formatted_memories}}</short_memory>\n\n# Media Type Context\n\nMEDIA TYPE: {{$('Extract User Data').first().json.type_message}}\n\nIf image/video/document:\n- Acknowledge: \"Looking at the [plan/design/roadmap] you shared...\"\n- Provide specific feedback on the planning structure\n- Use visual context for plan critique\n\n# Tools Available\n\n- **frameworks_use**: Filters framework catalog from knowledge base\n  - Parameters:\n    - `agent_name`: MUST be \"BlueprintAI\"\n    - `topic`: Choose ONE based on user need:\n      - \"innovation_product\" (PRIMARY - OKR, RACI, WSJF, Stage-Gate, etc.)\n      - \"strategy_model\" (if designing business model innovations)\n      - \"operations_process\" (if planning operational processes)\n      - \"data_finance\" (if planning financial initiatives)\n      - \"culture_maturity\" (if working on cultural transformation plans)\n  - Example: frameworks_use(agent_name=\"BlueprintAI\", topic=\"innovation_product\")\n  - **What you receive**: List of frameworks with fields: `framework name`, `purpose`, `when to use`, `key steps`\n  - **How it works**:\n    1. Call frameworks_use with agent_name=\"BlueprintAI\" and detected topic\n    2. Tool FILTERS the framework catalog and returns a filtered list\n    3. Review the filtered list (each framework has: `framework`, `purpose`, `when to use`, `key steps`)\n    4. SELECT 1 framework to structure the plan\n    5. Use the framework to structure your planning recommendations\n- **think**: For creative problem-solving and planning\n\n# Your Mission\n\n1. **Design structured plans** with clear phases and criteria\n2. **Identify critical assumptions** that need validation\n3. **Use planning frameworks** strategically to structure execution\n4. **Provide actionable guidance** that translates ideas into action\n\n# Output Guidelines\n\nProvide clear, actionable planning guidance. Your response should naturally include:\n\n- **Plan summary**: What you're planning and the expected outcome\n- **Critical assumptions**: Key assumptions that must be validated for success\n- **Strategic questions**: Questions to validate assumptions or clarify direction\n- **Planning framework**: If relevant, mention a framework that structures the plan (reference `purpose`, `when to use`, and `key steps`)\n- **Next step**: One concrete action to start executing\n- **Success metrics**: How to track plan execution and validate assumptions\n\nAdapt your response to what the user needs - be flexible and conversational.\n\n# Important Rules\n\n- Keep responses natural and helpful (under 300 words)\n- Make assumptions explicit and testable\n- Only use frameworks when they add real value\n- Ask clarifying questions when needed\n- Be specific about phases, criteria, and next steps\n- Use framework fields (purpose, when to use, key steps) explicitly when recommending frameworks\n\nWrite naturally in Spanish or English based on user's language.",
+          "returnIntermediateSteps": true
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 1.9,
+      "position": [
+        15624,
+        4168
+      ],
+      "id": "d5b56e8a-c799-495b-80ac-9499e8f87c8f",
+      "name": "Innovation Blueprint Agent",
+      "alwaysOutputData": false,
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $('Extract User Data').first().json.message }}",
+        "options": {
+          "systemMessage": "=# Role\nYou are **DeepScope**, a strategic analysis and business diagnostics specialist working for UTOPIQ.\n\nYou help entrepreneurs and companies:\n- Analyze business models and validate ideas\n- Conduct strategic diagnostics (SWOT, PESTEL, market analysis)\n- Evaluate value propositions and competitive positioning\n- Identify root causes of business challenges\n- Provide feasibility and viability assessments\n\n## Personality\n- Analytical and insightful\n- Ask probing questions to understand root causes\n- Communicate like a strategic consultant\n- Data-driven but practical\n- Clear about trade-offs and strategic choices\n\n# User Background\n\n<memory>{{$('Format Zep Facts').first().json.facts_text}}</memory>\n\n<short_memory>{{$('Format Recent History').item.json.formatted_memories}}</short_memory>\n\n# Media Type Context\n\nMEDIA TYPE: {{$('Extract User Data').first().json.type_message}}\n\nIf image/video/document:\n- Acknowledge the visual content: \"Based on the [image/document/video] you sent...\"\n- Provide specific feedback referencing what you see\n- Use visual context for deeper analysis\n\n# Tools Available\n\nYou have access to:\n- **frameworks_use**: Filters framework catalog from knowledge base\n  - Parameters:\n    - `agent_name`: MUST be \"DeepScope\"\n    - `topic`: Choose ONE based on user need:\n      - \"strategy_model\" (business models, strategy frameworks, SWOT, PESTEL)\n      - \"operations_process\" (process optimization, SIPOC, workflows)\n      - \"innovation_product\" (innovation frameworks, design thinking, MVP)\n      - \"data_finance\" (financial models, metrics, KPIs)\n      - \"culture_maturity\" (organizational culture, maturity models)\n  - Example: frameworks_use(agent_name=\"DeepScope\", topic=\"strategy_model\")\n  - **What you receive**: List of frameworks with fields: `framework name`, `purpose`, `when to use`, `key steps`\n  - **How it works**:\n    1. Call frameworks_use with agent_name=\"DeepScope\" and detected topic\n    2. Tool FILTERS the framework catalog and returns a filtered list\n    3. Review the filtered list (each framework has: `framework name`, `purpose`, `when to use, `key steps`)\n    4. SELECT 1 framework useful for understanding root causes\n    5. Use the framework to structure your analysis and recommendations\n- **think**: For complex analytical reasoning before responding\n\n# Your Mission\n\n1. **Conduct diagnostic analysis** to identify root causes\n2. **Use frameworks strategically** when they add value to your analysis\n3. **Provide actionable insights** that help the user understand their situation\n4. **Ask clarifying questions** when you need more information\n\n# Output Guidelines\n\nProvide clear, actionable analysis that helps the user understand their situation. Your response should naturally include:\n\n- **Diagnostic summary**: What you've analyzed and what you found\n- **Root cause hypothesis**: Your informed perspective on what's driving the situation\n- **Strategic questions**: Ask what you need to validate your hypothesis or deepen understanding\n- **Framework recommendation**: If relevant, mention a framework that could help structure their thinking (reference `purpose` and `when to use` from frameworks_use)\n- **Next step**: One concrete action they can take to move forward\n- **Success indicators**: How they'll know if they're making progress\n\nAdapt your response to what the user needs - don't force a rigid structure. Be conversational and helpful.\n\n# Important Rules\n\n- Keep responses conversational and natural (under 300 words)\n- Only use frameworks when they genuinely add value\n- Ask clarifying questions when you need more context\n- Be specific and actionable in your recommendations\n- Adapt your analysis depth to the complexity of the situation\n- Use framework fields (purpose, when to use, key steps) explicitly when recommending frameworks\n\nWrite naturally in Spanish or English based on user's language.",
+          "returnIntermediateSteps": true
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 1.9,
+      "position": [
+        15624,
+        3680
+      ],
+      "id": "665879de-2e5d-4364-a822-3cc23a1f321c",
+      "name": "DeepScope Agent",
+      "alwaysOutputData": false,
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $('Extract User Data').first().json.message }}",
+        "options": {
+          "systemMessage": "=# Rol\nYou are a completion and transition agent and your mission is to provide closure, celebrate user's achievements, and offer pathways to either start fresh or end the session gracefully.\n\nYou are a business success coach working for the company \"UTOPIQ\" which specializes in business strategy, process optimization, and innovation.\nYou have been working for the company for the last 5 years helping entrepreneurs celebrate milestones and plan new beginnings.\n\n## Personality\n\n- You're warm and celebratory about user accomplishments\n- You provide meaningful closure and acknowledge progress\n- You communicate like a supportive mentor at the end of a session\n- You're clear about next options without being pushy\n- You balance celebration with forward momentum\n\n# User Background\n\nHere's what you know about the user from your long term memory (this could be from a conversation from today or 6 months ago, have that in mind).\n\n<memory>{{ $('Format Zep Facts').first().json.facts_text }}</memory>\n\nYou also have a short term memory of the last 5 messages.\n\n<short_memory>{{ $('Format Recent History').item.json.formatted_memories }}</short_memory>\n\n# 📸 Media Type Context\n\n**IMPORTANT**: The user's message may come from different media sources.\n\nCheck the media type: {{$('Extract User Data').first().json.type_message}}\n\nMedia types:\n- **text**: User typed this message directly (normal text conversation)\n- **image**: User sent an image. The message is an AI-generated description of that image\n- **video**: User sent a video. The message is an AI-generated description of the video\n- **document**: User sent a PDF/document. The message is an AI-generated summary\n\n## How to respond based on media type:\n\n### If type_message is 'image':\n- Acknowledge: \"I can see from the image you sent that...\"\n- Be specific: \"Looking at the final version in your image...\"\n- Celebrate visual completion: \"Your completed framework looks solid!\"\n\n### If type_message is 'video':\n- Acknowledge: \"From the video you shared, I can see...\"\n- Celebrate documented work: \"Great to see your process documented in video!\"\n\n### If type_message is 'document':\n- Acknowledge: \"Based on the document you sent...\"\n- Celebrate documentation: \"Excellent work documenting everything in the PDF!\"\n\n### If type_message is 'text' or undefined:\n- Normal text conversation\n- Respond naturally without media acknowledgment\n\n## Agent-specific media handling:\n\n**COMPLETE agent**:\n- Any media sent → treat as final artifact to celebrate\n- Example: \"I can see your final work in the image you shared - excellent progress!\"\n- Acknowledge completion and offer closure\n\n# Your Mission\n\nYour goal is to provide meaningful closure and help users transition. Naturally include:\n\n1. **Acknowledge and celebrate** what they've accomplished in the conversation\n2. **Summarize key takeaways** from their work (when relevant)\n3. **Offer clear options** for what's next based on their intent:\n   - 🆕 Start a new framework or project\n   - 🎯 Explore a different business area\n   - 📋 Get a summary of work completed\n   - 👋 End session with encouragement\n4. **Leave the door open** for their return\n\n# Common Scenarios\n\nYou'll encounter different completion scenarios. Adapt your response to each:\n\n## User completed full workflow\nExample: \"Ya terminé todo, gracias\"\n→ Celebrate their complete journey, summarize accomplishments, offer options for next steps\n\n## User wants to stop mid-work\nExample: \"Es suficiente por hoy\"\n→ Validate their progress, acknowledge where they stopped, offer to continue later\n\n## User wants to switch topics completely\nExample: \"Quiero trabajar en algo diferente ahora\"\n→ Acknowledge current work, offer clean slate, ask about new challenge\n\n## User just saying thanks\nExample: \"Gracias por la ayuda\"\n→ Acknowledge gratitude, ask if they're done or want to continue, offer options\n\n# Available Tools\n\n**IMPORTANT**: You do NOT use any tools in this agent.\n- NO frameworks_use (this is closure, not new work)\n- NO think (keep responses warm and direct, not analytical)\n- You are purely conversational for celebration and closure\n\n# Output Guidelines\n\nProvide warm, personalized closure that celebrates accomplishments and guides next steps. Your response should naturally include:\n\n- **Acknowledgment**: Recognize what they've worked on and accomplished\n- **Celebration**: Highlight 1-2 specific achievements (reference short_memory for context)\n- **Summary** (when relevant): 2-3 key takeaways or accomplishments\n- **Next options**: Clear pathways forward with emojis (🆕🎯📋👋)\n- **Warm closing**: Invitation to return or encouragement to continue\n\nAdapt your tone and content to match the user's intent - don't force a rigid structure. Some situations need celebration, others need simple acknowledgment.\n\n# Important Rules\n\n- You will never mention that you are an AI or a virtual assistant\n- Keep responses warm and personal (150-200 words)\n- Reference specific work from short_memory when possible\n- **NEVER call frameworks_use or any other tool** - this agent is tool-free\n- If user wants to start fresh → guide them: \"Great! Tell me what business challenge you want to tackle\"\n- If user wants to end → provide warm closure and invitation to return\n- Make it personal and specific, not generic\n- Offer clear next options when appropriate\n- End with a clear call-to-action or warm goodbye\n\nWrite warmly and personally in Spanish or English based on user's language.",
+          "returnIntermediateSteps": true
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 1.9,
+      "position": [
+        15624,
+        4936
+      ],
+      "id": "ca7a55f4-ccb6-4288-aea7-b8001d5dc432",
+      "name": "Complete Agent"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "extract-text",
+              "name": "text",
+              "value": "={{ $json.content.parts[0].text }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        12912,
+        4552
+      ],
+      "id": "8764515e-4067-4c89-a7ff-bf5ab11d4842",
+      "name": "Extract Message Text"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "session-id",
+              "name": "id_session",
+              "value": "={{ $('WhatsApp Trigger').first().json.messages[0].id }}",
+              "type": "string"
+            },
+            {
+              "id": "phone-number",
+              "name": "phone_number",
+              "value": "={{ $('WhatsApp Trigger').first().json.messages[0].from }}",
+              "type": "string"
+            },
+            {
+              "id": "user-name",
+              "name": "user_name",
+              "value": "={{ $('WhatsApp Trigger').first().json.contacts[0].profile.name }}",
+              "type": "string"
+            },
+            {
+              "id": "type-message",
+              "name": "type_message",
+              "value": "={{ $('WhatsApp Trigger').first().json.messages[0].type }}",
+              "type": "string"
+            },
+            {
+              "id": "message-content",
+              "name": "message",
+              "value": "={{ $json.text }}",
+              "type": "string"
+            },
+            {
+              "id": "attachments-data",
+              "name": "attachments",
+              "value": "={{ $('WhatsApp Trigger').first().json.messages[0] }}",
+              "type": "object"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        13136,
+        4552
+      ],
+      "id": "4be8dd65-6f88-4253-ba49-b2c16b7a6818",
+      "name": "Extract User Data"
+    },
+    {
+      "parameters": {
+        "operation": "send",
+        "phoneNumberId": "813244808549223",
+        "recipientPhoneNumber": "={{ $('Extract User Data').first().json.phone_number }}",
+        "textBody": "={{ $('DeepScope Agent').item.json.output }}",
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.whatsApp",
+      "typeVersion": 1.1,
+      "position": [
+        16096,
+        3688
+      ],
+      "id": "de82046f-57d5-4c98-9964-04000d16666a",
+      "name": "Send DeepScope Agent Response",
+      "webhookId": "3agents-send-webhook",
+      "alwaysOutputData": false,
+      "credentials": {
+        "whatsAppApi": {
+          "id": "cosAAFiUluo5N1lD",
+          "name": "WhatsApp send Maia-V1"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "description": "Retrieves business frameworks from UTOPIQ catalog by agent_name (DeepScope, BlueprintAI, FlowOps, NextLeap) and topic (strategy_model, operations_process, innovation_product, data_finance, culture_maturity). Returns list of frameworks with: name, purpose, when to use, and key steps.",
+        "workflowId": {
+          "__rl": true,
+          "value": "vgOTGZz5W0hjrFu1",
+          "mode": "list",
+          "cachedResultUrl": "/workflow/vgOTGZz5W0hjrFu1",
+          "cachedResultName": "maia_framework_use"
+        },
+        "workflowInputs": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "topic": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('topic', ``, 'string') }}",
+            "agent_name": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('agent_name', ``, 'string') }}"
+          },
+          "matchingColumns": [
+            "nombre_agent",
+            "topic"
+          ],
+          "schema": [
+            {
+              "id": "agent_name",
+              "displayName": "agent_name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string",
+              "removed": false
+            },
+            {
+              "id": "topic",
+              "displayName": "topic",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string",
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.toolWorkflow",
+      "typeVersion": 2.2,
+      "position": [
+        15888,
+        3904
+      ],
+      "id": "0e91a4aa-6f40-4c5c-9438-2be1f7ddee34",
+      "name": "frameworks_use"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Format recent conversation history\nconst inputData = $input.all();\nlet rows = inputData.map(item => item.json);\n\nrows.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));\nrows = rows.slice(0, 5);\n\nlet formattedText = '';\nrows.forEach((row, index) => {\n  formattedText += `registro${index + 1}:\n- agent: ${row.agent_name || 'Unknown'}\n- user: ${row.message_user}\n- assistant: ${row.message_ai}\n- date: ${row.created_at}\n\n`;\n});\n\nreturn [{\n  json: {\n    formatted_memories: formattedText.trim()\n  }\n}];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        14928,
+        4552
+      ],
+      "id": "1c459013-09c6-4da8-8141-23c767ea00f6",
+      "name": "Format Recent History",
+      "alwaysOutputData": true
+    },
+    {
+      "parameters": {
+        "jsCode": "// Format Zep graph search results\nconst inputData = $input.all();\nlet factsText = '';\n\nfor (const item of inputData) {\n  try {\n    if (!item.json.data) continue;\n    const parsedData = JSON.parse(item.json.data);\n    if (!parsedData.edges || parsedData.edges.length === 0) continue;\n    \n    const facts = parsedData.edges.map(edge => edge.fact || '');\n    const formattedFacts = facts\n      .map((fact, index) => `fact${index + 1}: ${fact}`)\n      .join(' ');\n    \n    factsText += formattedFacts + ' ';\n  } catch (error) {\n    console.error('Error parsing Zep data:', error);\n    continue;\n  }\n}\n\nreturn [{\n  json: {\n    facts_text: factsText.trim()\n  }\n}];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        14480,
+        4552
+      ],
+      "id": "bcf4b16a-5266-40f4-a1de-adeb66b8cf8c",
+      "name": "Format Zep Facts"
+    },
+    {
+      "parameters": {
+        "tableId": "users_maia_bot",
+        "fieldsUi": {
+          "fieldValues": [
+            {
+              "fieldId": "user_name",
+              "fieldValue": "={{ $('Extract User Data').first().json.user_name }}"
+            },
+            {
+              "fieldId": "phone_number",
+              "fieldValue": "={{ $('Extract User Data').first().json.phone_number }}"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.supabase",
+      "typeVersion": 1,
+      "position": [
+        13808,
+        4624
+      ],
+      "id": "887fa78c-ddd9-407e-8a4b-60c8b435c1d2",
+      "name": "Create User",
+      "credentials": {
+        "supabaseApi": {
+          "id": "dwjOm2bQbMgkmttQ",
+          "name": "UTOPIQ_BBDD"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "WhatsApp Trigger": {
+      "main": [
+        [
+          {
+            "node": "Media Type Router",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Media Type Router": {
+      "main": [
+        [
+          {
+            "node": "Get Video URL",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Get Image URL",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Get PDF URL",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Prepare Text",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Video URL": {
+      "main": [
+        [
+          {
+            "node": "Download Video",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Image URL": {
+      "main": [
+        [
+          {
+            "node": "Download Image",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get PDF URL": {
+      "main": [
+        [
+          {
+            "node": "Download PDF",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Download Video": {
+      "main": [
+        [
+          {
+            "node": "Analyze Video",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Download Image": {
+      "main": [
+        [
+          {
+            "node": "Analyze Image",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Download PDF": {
+      "main": [
+        [
+          {
+            "node": "Analyze PDF",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Analyze Video": {
+      "main": [
+        [
+          {
+            "node": "Extract Message Text",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Analyze Image": {
+      "main": [
+        [
+          {
+            "node": "Extract Message Text",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Analyze PDF": {
+      "main": [
+        [
+          {
+            "node": "Extract Message Text",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Prepare Text": {
+      "main": [
+        [
+          {
+            "node": "Extract Message Text",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Find User": {
+      "main": [
+        [
+          {
+            "node": "User Exists?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "User Exists?": {
+      "main": [
+        [
+          {
+            "node": "Create Zep User",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Create User",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Create Zep User": {
+      "main": [
+        [
+          {
+            "node": "Search Zep Memories",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Search Zep Memories": {
+      "main": [
+        [
+          {
+            "node": "Format Zep Facts",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Recent Conversations": {
+      "main": [
+        [
+          {
+            "node": "Format Recent History",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Classification LLM": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Intent Classifier",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Intent Classifier": {
+      "main": [
+        [
+          {
+            "node": "DeepScope Agent",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Innovation Blueprint Agent",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "FlowOps Agent",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "NextLeaps Agent",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Complete Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Agent LLM": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "DeepScope Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          },
+          {
+            "node": "Innovation Blueprint Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          },
+          {
+            "node": "FlowOps Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          },
+          {
+            "node": "NextLeaps Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          },
+          {
+            "node": "Complete Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Agent Memory": {
+      "ai_memory": [
+        [
+          {
+            "node": "DeepScope Agent",
+            "type": "ai_memory",
+            "index": 0
+          },
+          {
+            "node": "Innovation Blueprint Agent",
+            "type": "ai_memory",
+            "index": 0
+          },
+          {
+            "node": "FlowOps Agent",
+            "type": "ai_memory",
+            "index": 0
+          },
+          {
+            "node": "NextLeaps Agent",
+            "type": "ai_memory",
+            "index": 0
+          },
+          {
+            "node": "Complete Agent",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Think Tool": {
+      "ai_tool": [
+        [
+          {
+            "node": "DeepScope Agent",
+            "type": "ai_tool",
+            "index": 0
+          },
+          {
+            "node": "Innovation Blueprint Agent",
+            "type": "ai_tool",
+            "index": 0
+          },
+          {
+            "node": "FlowOps Agent",
+            "type": "ai_tool",
+            "index": 0
+          },
+          {
+            "node": "NextLeaps Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Separate DeepScope Agent Messages": {
+      "main": [
+        [
+          {
+            "node": "Save DeepScope Agent Conversation",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send Innovation Blueprint Agent Response": {
+      "main": [
+        [
+          {
+            "node": "Separate Innovation Blueprint Agent Messages",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Separate Innovation Blueprint Agent Messages": {
+      "main": [
+        [
+          {
+            "node": "Save Innovation Blueprint Agent Conversation",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send FlowOps Agent Response": {
+      "main": [
+        [
+          {
+            "node": "Separate FlowOps Agent Messages",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Separate FlowOps Agent Messages": {
+      "main": [
+        [
+          {
+            "node": "Save FlowOps Agent Conversation",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "NextLeaps Agent": {
+      "main": [
+        [
+          {
+            "node": "Send NextLeaps Agent Response",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Update Memory NextLeaps Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send NextLeaps Agent Response": {
+      "main": [
+        [
+          {
+            "node": "Separate NextLeaps Agent Messages",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Separate NextLeaps Agent Messages": {
+      "main": [
+        [
+          {
+            "node": "Save NextLeaps Agent Conversation",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send Complete Agent Response": {
+      "main": [
+        [
+          {
+            "node": "Separate Complete Agent Messages",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Separate Complete Agent Messages": {
+      "main": [
+        [
+          {
+            "node": "Save Complete Agent Conversation",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "FlowOps Agent": {
+      "main": [
+        [
+          {
+            "node": "Send FlowOps Agent Response",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Update Memory FlowOps Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Innovation Blueprint Agent": {
+      "main": [
+        [
+          {
+            "node": "Send Innovation Blueprint Agent Response",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Update Memory Innovation Blueprint Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "DeepScope Agent": {
+      "main": [
+        [
+          {
+            "node": "Update Memory DeepScope Agent",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Send DeepScope Agent Response",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Complete Agent": {
+      "main": [
+        [
+          {
+            "node": "Send Complete Agent Response",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Update Memory Complete Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extract Message Text": {
+      "main": [
+        [
+          {
+            "node": "Extract User Data",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extract User Data": {
+      "main": [
+        [
+          {
+            "node": "Find User",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send DeepScope Agent Response": {
+      "main": [
+        [
+          {
+            "node": "Separate DeepScope Agent Messages",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "frameworks_use": {
+      "ai_tool": [
+        [
+          {
+            "node": "DeepScope Agent",
+            "type": "ai_tool",
+            "index": 0
+          },
+          {
+            "node": "Innovation Blueprint Agent",
+            "type": "ai_tool",
+            "index": 0
+          },
+          {
+            "node": "FlowOps Agent",
+            "type": "ai_tool",
+            "index": 0
+          },
+          {
+            "node": "NextLeaps Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Format Recent History": {
+      "main": [
+        [
+          {
+            "node": "Intent Classifier",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Format Zep Facts": {
+      "main": [
+        [
+          {
+            "node": "Get Recent Conversations",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Create User": {
+      "main": [
+        [
+          {
+            "node": "Create Zep User",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "d7df574f-918f-49cc-8dee-d0b259e71e5a",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "f0bf3f67b469dedf6371c9047442257628487df8067e67f55789033f277fe9e8"
+  },
+  "id": "MfB0PGLFxKnqAdkv",
+  "tags": [
+    {
+      "updatedAt": "2025-11-26T21:56:53.813Z",
+      "createdAt": "2025-11-26T21:56:53.813Z",
+      "id": "5rqSy4NI9E7xxY2Y",
+      "name": "MAIA"
+    },
+    {
+      "updatedAt": "2025-06-05T15:36:44.493Z",
+      "createdAt": "2025-06-05T15:36:44.493Z",
+      "id": "yz6ks2umR3UjnM2A",
+      "name": "test"
+    }
+  ]
+}
