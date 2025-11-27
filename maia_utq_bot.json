@@ -1961,12 +1961,14 @@
       "main": [
         [
           {
-            "node": "DeepScope Agent",
+            "node": "Greetings Agent",
             "type": "main",
             "index": 0
-          },
+          }
+        ],
+        [
           {
-            "node": "Greetings Agent",
+            "node": "DeepScope Agent",
             "type": "main",
             "index": 0
           }
